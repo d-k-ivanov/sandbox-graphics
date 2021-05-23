@@ -17,9 +17,21 @@ camera = np.array([0, 0, 1])
 ratio = float(width) / height
 #        left,  top,   right,  bottom
 screen = (-1, 1 / ratio, 1, -1 / ratio)
+
+objects = [
+    { 'center': np.array([-0.2, 0, -1]), 'radius': 0.7 },
+    { 'center': np.array([0.1, -0.3, 0]), 'radius': 0.1 },
+    { 'center': np.array([-0.3, 0, 0]), 'radius': 0.15 }
+]
+
 print("Camera: ", camera)
 print("Ratio:  ", ratio)
 print("Screen: ", screen)
+
+i = 0
+for obj in objects:
+    i = i + 1
+    print("Object ", i, ": ", obj)
 
 image = np.zeros((height, width, 3))
 for i, y in enumerate(np.linspace(screen[1], screen[3], height)):
