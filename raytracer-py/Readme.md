@@ -51,3 +51,21 @@ ray\big(t\big)  = camera + \frac{pixel - camera}{\|pixel - camera\|} \times t
 ray(t)  =  camera  +  -------------------- t
                       ||pixel  -  camera||
 ```
+
+## Sphere
+
+### Equation
+
+```tex
+{\Large \lVert X - C \rVert = r}
+```
+
+![ray](https://render.githubusercontent.com/render/math?math=%7B%5CLarge%20%5ClVert%20X%20-%20C%20%5CrVert%20%3D%20r%7D&mode=inline)
+
+### Intersection
+
+```tex
+{\Large \lVert X - C \rVert)^{2} = r^{2}}
+```
+
+![ray](https://render.githubusercontent.com/render/math?math=%7B%5CLarge%20%5ClVert%20X%20-%20C%20%5CrVert%29%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D&mode=inline)
