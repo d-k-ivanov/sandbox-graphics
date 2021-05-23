@@ -65,7 +65,7 @@ ray(t)  =  camera  +  -------------------- t
 ### Intersection
 
 ```tex
-{\Large \lVert X - C \rVert)^{2} = r^{2}}
+{\Large \lVert X - C \rVert^{2} = r^{2}}
 ```
 
-![ray](https://render.githubusercontent.com/render/math?math=%7B%5CLarge%20%5ClVert%20X%20-%20C%20%5CrVert%29%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D&mode=inline)
+![ray](https://render.githubusercontent.com/render/math?math=%7B%5CLarge%20%5ClVert%20X%20-%20C%20%5CrVert%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D&mode=inline)
