@@ -10,5 +10,8 @@
                         pixel  -  camera
 ray(t)  =  camera  +  -------------------- t
                       ||pixel  -  camera||
-**
+```
+
+```tex
+ray\big(t\big)  = camera + \frac{pixel - camera}{\|pixel - camera\|} \times t
 ```
