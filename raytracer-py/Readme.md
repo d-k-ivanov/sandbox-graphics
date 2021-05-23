@@ -54,13 +54,11 @@ ray(t)  =  camera  +  -------------------- t
 
 ## Ray - Origin
 
-### No Text blocks
-
 ```tex
-{\Large ray\big(t\big) = O + \frac{D - O}{\lVert D - O \rVert} \cdot t} = O + d \cdot t}
+{\Large ray\big(t\big) = O + \frac{D - O}{\lVert D - O \rVert} \cdot t = O + d \cdot t}
 ```
 
-![ray](https://render.githubusercontent.com/render/math?math=%7B%5CLarge%20ray%5Cbig%28t%5Cbig%29%20%3D%20O%20%2B%20%5Cfrac%7BD%20-%20O%7D%7B%5ClVert%20D%20-%20O%20%5CrVert%7D%20%5Ccdot%20t%7D%20%3D%20O%20%2B%20d%20%5Ccdot%20t%7D&mode=inline)
+![ray](https://render.githubusercontent.com/render/math?math=%7B%5CLarge%20ray%5Cbig%28t%5Cbig%29%20%3D%20O%20%2B%20%5Cfrac%7BD%20-%20O%7D%7B%5ClVert%20D%20-%20O%20%5CrVert%7D%20%5Ccdot%20t%20%3D%20O%20%2B%20d%20%5Ccdot%20t%7D&mode=inline)
 
 ---
 
