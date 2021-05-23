@@ -81,11 +81,13 @@ ray(t)  =  camera  +  -------------------- t
 ![sphere_intersection](https://render.githubusercontent.com/render/math?math=%7B%5CLarge%20%5ClVert%20X%20-%20C%20%5CrVert%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D&mode=inline)
 
 ```tex
+\begin{align*}
 \\{\Large \lVert ray\big(t\big) - C \rVert^{2} = r^{2}}
 \\{\Large \lVert O + d \cdot t - C \rVert^{2} = r^{2}}
 \\{\Large \langle d \cdot t + O - C, d \cdot t + O - C \rangle = r^{2}}
 \\{\Large \langle d,d \rangle t^{2} + 2t \langle d,O - C \rangle + \langle O - C,O - C \rangle = r^{2}}
 \\{\Large \langle d,d \rangle t^{2} + 2t \langle d,O - C \rangle + \lVert O - C \rVert^{2} - r^{2} = 0}
+\end{align*}
 ```
 
-![sphere_intersection](https://render.githubusercontent.com/render/math?math=%5C%5C%7B%5CLarge%20%5ClVert%20ray%5Cbig%28t%5Cbig%29%20-%20C%20%5CrVert%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5ClVert%20O%20%2B%20d%20%5Ccdot%20t%20-%20C%20%5CrVert%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%20%5Ccdot%20t%20%2B%20O%20-%20C%2C%20d%20%5Ccdot%20t%20%2B%20O%20-%20C%20%5Crangle%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%2Cd%20%5Crangle%20t%5E%7B2%7D%20%2B%202t%20%5Clangle%20d%2CO%20-%20C%20%5Crangle%20%2B%20%5Clangle%20O%20-%20C%2CO%20-%20C%20%5Crangle%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%2Cd%20%5Crangle%20t%5E%7B2%7D%20%2B%202t%20%5Clangle%20d%2CO%20-%20C%20%5Crangle%20%2B%20%5ClVert%20O%20-%20C%20%5CrVert%5E%7B2%7D%20-%20r%5E%7B2%7D%20%3D%200%7D&mode=inline)
+![sphere_intersection](https://render.githubusercontent.com/render/math?math=%5Cbegin%7Balign%2A%7D%0A%5C%5C%7B%5CLarge%20%5ClVert%20ray%5Cbig%28t%5Cbig%29%20-%20C%20%5CrVert%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5ClVert%20O%20%2B%20d%20%5Ccdot%20t%20-%20C%20%5CrVert%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%20%5Ccdot%20t%20%2B%20O%20-%20C%2C%20d%20%5Ccdot%20t%20%2B%20O%20-%20C%20%5Crangle%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%2Cd%20%5Crangle%20t%5E%7B2%7D%20%2B%202t%20%5Clangle%20d%2CO%20-%20C%20%5Crangle%20%2B%20%5Clangle%20O%20-%20C%2CO%20-%20C%20%5Crangle%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%2Cd%20%5Crangle%20t%5E%7B2%7D%20%2B%202t%20%5Clangle%20d%2CO%20-%20C%20%5Crangle%20%2B%20%5ClVert%20O%20-%20C%20%5CrVert%5E%7B2%7D%20-%20r%5E%7B2%7D%20%3D%200%7D%0A%5Cend%7Balign%2A%7D&mode=inline)
