@@ -91,3 +91,14 @@ ray(t)  =  camera  +  -------------------- t
 ```
 
 ![sphere_intersection](https://render.githubusercontent.com/render/math?math=%5Cbegin%7Balign%2A%7D%0A%5C%5C%7B%5CLarge%20%5ClVert%20ray%5Cbig%28t%5Cbig%29%20-%20C%20%5CrVert%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5ClVert%20O%20%2B%20d%20%5Ccdot%20t%20-%20C%20%5CrVert%5E%7B2%7D%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%20%5Ccdot%20t%20%2B%20O%20-%20C%2C%20d%20%5Ccdot%20t%20%2B%20O%20-%20C%20%5Crangle%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%2Cd%20%5Crangle%20t%5E%7B2%7D%20%2B%202t%20%5Clangle%20d%2CO%20-%20C%20%5Crangle%20%2B%20%5Clangle%20O%20-%20C%2CO%20-%20C%20%5Crangle%20%3D%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5Clangle%20d%2Cd%20%5Crangle%20t%5E%7B2%7D%20%2B%202t%20%5Clangle%20d%2CO%20-%20C%20%5Crangle%20%2B%20%5ClVert%20O%20-%20C%20%5CrVert%5E%7B2%7D%20-%20r%5E%7B2%7D%20%3D%200%7D%0A%5Cend%7Balign%2A%7D&mode=inline)
+
+```tex
+\begin{align*}
+\\{\Large a = \lVert d \rVert^{2} = 1}
+\\{\Large b = 2\langle d,O - C \rangle}
+\\{\Large c = \lVert O - C \rVert^{2} - r^{2}}
+\\{\Large \Delta = b^{2} - 4ac}
+\end{align*}
+```
+
+![quadratic_equation](https://render.githubusercontent.com/render/math?math=%5Cbegin%7Balign%2A%7D%0A%5C%5C%7B%5CLarge%20a%20%3D%20%5ClVert%20d%20%5CrVert%5E%7B2%7D%20%3D%201%7D%0A%5C%5C%7B%5CLarge%20b%20%3D%202%5Clangle%20d%2CO%20-%20C%20%5Crangle%7D%0A%5C%5C%7B%5CLarge%20c%20%3D%20%5ClVert%20O%20-%20C%20%5CrVert%5E%7B2%7D%20-%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5CDelta%20%3D%20b%5E%7B2%7D%20-%204ac%7D%0A%5Cend%7Balign%2A%7D&mode=inline)
