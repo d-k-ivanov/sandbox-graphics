@@ -102,3 +102,11 @@ ray(t)  =  camera  +  -------------------- t
 ```
 
 ![quadratic_equation](https://render.githubusercontent.com/render/math?math=%5Cbegin%7Balign%2A%7D%0A%5C%5C%7B%5CLarge%20a%20%3D%20%5ClVert%20d%20%5CrVert%5E%7B2%7D%20%3D%201%7D%0A%5C%5C%7B%5CLarge%20b%20%3D%202%5Clangle%20d%2CO%20-%20C%20%5Crangle%7D%0A%5C%5C%7B%5CLarge%20c%20%3D%20%5ClVert%20O%20-%20C%20%5CrVert%5E%7B2%7D%20-%20r%5E%7B2%7D%7D%0A%5C%5C%7B%5CLarge%20%5CDelta%20%3D%20b%5E%7B2%7D%20-%204ac%7D%0A%5Cend%7Balign%2A%7D&mode=inline)
+
+## The Blinn-Phong model
+
+```tex
+{\Large I_{p} = k_{a} \cdot i_{a} + k_{d} \cdot i_{d} \cdot L \cdot N + k_{s} \cdot i_{s} \cdot \big(N \cdot \frac{L+V}{ \lVert L + V \rVert}\big)^\frac{ \alpha }{4} }
+```
+
+![sphere_intersection](https://render.githubusercontent.com/render/math?math=%7B%5CLarge%20I_%7Bp%7D%20%3D%20k_%7Ba%7D%20%5Ccdot%20i_%7Ba%7D%20%2B%20k_%7Bd%7D%20%5Ccdot%20i_%7Bd%7D%20%5Ccdot%20L%20%5Ccdot%20N%20%2B%20k_%7Bs%7D%20%5Ccdot%20i_%7Bs%7D%20%5Ccdot%20%5Cbig%28N%20%5Ccdot%20%5Cfrac%7BL%2BV%7D%7B%20%5ClVert%20L%20%2B%20V%20%5CrVert%7D%5Cbig%29%5E%5Cfrac%7B%20%5Calpha%20%7D%7B4%7D%20%7D&mode=inline)
