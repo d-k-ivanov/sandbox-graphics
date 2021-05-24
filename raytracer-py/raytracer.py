@@ -49,10 +49,12 @@ if __name__ == '__main__':
     # height = 200
     # width = 800
     # height = 600
+    width = 1024
+    height = 768
     # width = 1920
     # height = 1080
-    width = 3840
-    height = 2160
+    # width = 3840
+    # height = 2160
 
     max_depth = 3
 
