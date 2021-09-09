@@ -1,3 +1,4 @@
 *.dotSettings.user
 .ipynb_checkpoints/
 .vscode/
+tmp/
