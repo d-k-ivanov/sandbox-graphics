@@ -91,7 +91,9 @@ function init()
 
     // to test texturing, uncomment the following four lines
     var path = "";
-    var texture = new THREE.TextureLoader().load( path + '../textures/ash_uvgrid01.jpg' );
+    // var texture = new THREE.TextureLoader().load( path + '../textures/uv-grid-01.jpg' );
+    // var texture = new THREE.TextureLoader().load( path + '../textures/rust-01.jpg' );
+    var texture = new THREE.TextureLoader().load( path + '../textures/metall-01.jpg' );
     texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
     texture.outputEncoding = true;
     lambertMaterial = new THREE.MeshLambertMaterial( { map: texture } );
@@ -101,7 +103,20 @@ function init()
         lambertMaterial);
 
     scene.add( teapot );
-    scene.background = new THREE.Color(0x808080);
+
+    const backgroundTexture = new THREE.TextureLoader().load(path + '../textures/stars-01.jpg', function (texture) {
+        var img = texture.image;
+        var imageAspect = img.width / img.height;
+        const factor = imageAspect / canvasRatio;
+        scene.background.offset.x = factor < 1 ? (1 - 1 / factor) / 2 : 0;
+        scene.background.repeat.x = factor < 1 ? 1 / factor : 1;
+        scene.background.offset.y = factor < 1 ? 0 : (1 - factor) / 2;
+        scene.background.repeat.y = factor < 1 ? 1 : factor;
+    });
+    scene.background = backgroundTexture;
+    backgroundTexture.wrapS = THREE.RepeatWrapping;
+    backgroundTexture.wrapT = THREE.RepeatWrapping;
+    // scene.background = new THREE.Color(0x808080);
 
     // GUI
     setupGui();
