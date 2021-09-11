@@ -1,3 +1,7 @@
 
 # Test WebGL
 https://get.webgl.org/
+
+# PAL: 50Hz
+https://en.wikipedia.org/wiki/PAL
+

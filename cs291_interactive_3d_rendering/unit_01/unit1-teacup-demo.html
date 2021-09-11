@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style>
+            body {
+                font-family: Monospace;
+                background-color: #F5F5F5;
+                margin: 0px;
+                overflow: hidden;
+            }
+            #container {
+                height: 492px;
+                width: 876px;
+            }
+        </style>
+        <script src="../libs/webgl_detector.js"></script>
+        <script src="../libs/stats.min.js"></script>
+        <script src="../libs/three.min.js"></script>
+        <script src="../libs/trackball_controls.js"></script>
+        <script src="../libs/dat.gui.min.js"></script>
+        <script src="../libs/shaders.js"></script>
+        <script src="../libs/teacup_geometry.js"></script>
+    </head>
+    <body>
+        <div id="container">
+        </div>
+        <!-- <script src=> -->
+        <script>
+            if ( ! WebGLDetector.is_webgl_supported ) {
+                WebGLDetector.errorMessage();
+            }
+            else {
+                var thescript = document.createElement('script');
+                thescript.setAttribute('type','text/javascript');
+                thescript.setAttribute('src','unit1-teacup-demo.js');
+                document.getElementsByTagName('head')[0].appendChild(thescript);
+            }
+        </script>
+    </body>
+</html>
