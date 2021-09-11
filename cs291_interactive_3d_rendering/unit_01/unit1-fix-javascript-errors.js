@@ -14,13 +14,13 @@ var windowScale;
 var cameraControls;
 var clock = new THREE.Clock();
 
-function drawGoldCube()
-{
+function drawCube(params) {
+    params = params || {};
+    var color = params.color !== undefined ? params.color:0xFFDF00;
+    var wireframe = params.wireframe !== undefined ? params.wireframe:true
     var cube;
     var cubeSizeLength = 400;
-    var goldColor = "#FFDF00";
-    var showFrame = true;
-    var wireMaterial = new THREE.MeshBasicMaterial( { color: goldColor, wireframe: showFrame } ) ;
+    var wireMaterial = new THREE.MeshBasicMaterial( { color, wireframe } ) ;
     var cubeGeometry = new THREE.BoxGeometry(cubeSizeLength, cubeSizeLength, cubeSizeLength);
     cube = new THREE.Mesh( cubeGeometry, wireMaterial );
     cube.position.x = 0; // centered at origin
@@ -29,8 +29,10 @@ function drawGoldCube()
     scene.add( cube );
 }
 
-function init()
+function init(params)
 {
+    params = params || {};
+    var gridScale = params.gridScale !== undefined ? params.gridScale:0.01;
     // var canvasWidth = 846;
     // var canvasHeight = 494;
     // For grading the window is fixed in size; here's general code:
@@ -60,9 +62,9 @@ function init()
     cameraControls.target.set(0,0,0);
 
     // draw the coordinate grid
-    Coordinates.drawGrid({size:1000,scale:0.01,color:0xFF0000});
-    Coordinates.drawGrid({size:1000,scale:0.01, orientation:"y",color:0x00FF00});
-    Coordinates.drawGrid({size:1000,scale:0.01, orientation:"z",color:0x0000FF});
+    Coordinates.drawGrid({size:1000, scale:gridScale, color:0xFF0000});
+    Coordinates.drawGrid({size:1000, scale:gridScale, orientation:"y", color:0x00FF00});
+    Coordinates.drawGrid({size:1000, scale:gridScale, orientation:"z", color:0x0000FF});
 
     // const backgroundTexture = new THREE.TextureLoader().load('../textures/stars-02.jpg', function (texture) {
     //     var img = texture.image;
@@ -92,6 +94,7 @@ function render()
     renderer.render(scene, camera);
 }
 
-init();
-drawGoldCube();
+init({gridScale:0.01});
+// drawCube({color:0x000000, wireframe:true});
+drawCube({color:0xFFFFFF, wireframe:false});
 animate();
