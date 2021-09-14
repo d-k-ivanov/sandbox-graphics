@@ -18,7 +18,8 @@ var phong;
 var flatGouraudMaterial, flatPhongMaterial, gouraudMaterial, phongMaterial, wireMaterial;
 var teacup;
 
-function init() {
+function init()
+{
     var canvasWidth = window.innerWidth;
     var canvasHeight = window.innerHeight;
 
@@ -87,7 +88,8 @@ function init() {
 }
 
 // EVENT HANDLERS
-function onWindowResize() {
+function onWindowResize()
+{
     var canvasWidth = window.innerWidth;
     var canvasHeight = window.innerHeight;
 
@@ -97,7 +99,8 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
 }
 
-function setupGui() {
+function setupGui()
+{
     effectController = {
         shininess: 100.0,
         ka: 0.2,
@@ -169,19 +172,22 @@ function setupGui() {
     h.add(effectController, "newWire").name("Show wireframe only");
 }
 
-function animate() {
+function animate()
+{
     requestAnimationFrame(animate);
     render();
 }
 
-function render() {
+function render()
+{
     var delta = clock.getDelta();
 
     cameraControls.update(delta);
     if (effectController.newTess !== tess ||
         effectController.cup !== bCup ||
         effectController.saucer !== bSaucer ||
-        effectController.newFlat !== flat || effectController.newPhong !== phong || effectController.newWire !== wire) {
+        effectController.newFlat !== flat || effectController.newPhong !== phong || effectController.newWire !== wire)
+    {
         tess = effectController.newTess;
         bCup = effectController.cup;
         bSaucer = effectController.saucer;
@@ -214,7 +220,8 @@ function render() {
     gouraudMaterial.uniforms.uMaterialColor.value.copy(materialColor);
     phongMaterial.uniforms.uMaterialColor.value.copy(materialColor);
 
-    if (!effectController.metallic) {
+    if (!effectController.metallic)
+    {
         materialColor.setRGB(1, 1, 1);
     }
     flatGouraudMaterial.uniforms.uSpecularColor.value.copy(materialColor);
@@ -231,7 +238,8 @@ function render() {
 
 }
 
-function createShaderMaterial(id, light, ambientLight) {
+function createShaderMaterial(id, light, ambientLight)
+{
     var shader = THREE.ShaderTypes[id];
 
     var u = THREE.UniformsUtils.clone(shader.uniforms);
@@ -249,9 +257,11 @@ function createShaderMaterial(id, light, ambientLight) {
     return material;
 }
 
-function fillScene() {
+function fillScene()
+{
     // Coordinates.drawAllAxes({axisLength:1000,axisRadius:5,axisTess:50});
-    if (teacup !== undefined) {
+    if (teacup !== undefined)
+    {
         teacup.geometry.dispose();
         scene.remove(teacup);
 
