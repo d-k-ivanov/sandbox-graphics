@@ -298,22 +298,17 @@
 
             segments = Math.max(2, Math.floor(segments));
 
-            const maxHeight = 0.857954740524292;
+            const maxHeight =  0.857954740524292;
             const maxHeight2 = maxHeight / 2;
             const trueSize = size / maxHeight2; // Number of elements depends on what is needed. Subtract degenerate
-            // triangles at tip of bottom and lid out in advance.
 
-            let numTriangles = 2500;
+            let numTriangles = 26 * 2 * segments * segments;
             const indices = new Uint32Array(numTriangles * 3);
-            // const indices = [];
-            let numVertices = 363;
-            // numVertices *= (segments + 1) * (segments + 1);
+            let numVertices = 251;
+            numVertices *= (segments + 1) * (segments + 1);
             const vertices = new Float32Array(numVertices * 3);
             const normals = new Float32Array(numVertices * 3);
             const uvs = new Float32Array(numVertices * 2); // Bezier form
-            // const vertices = [];
-            // const normals = [];
-            // const uvs = [];
 
             const ms = new THREE.Matrix4();
             ms.set(-1.0, 3.0, -3.0, 1.0, 3.0, -6.0, 3.0, 0.0, -3.0, 3.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
@@ -364,13 +359,15 @@
             let uvCount = 0;
             let indexCount = 0;
 
-            for (var surf = minPatches; surf < maxPatches; surf++) {
+            for (let surf = minPatches; surf < maxPatches; surf++) {
+                // lid is in the middle of the data, patches 20-27,
+                // so ignore it for this part of the loop if the lid is not desired
                 // get M * G * M matrix for x,y,z
                 for (let i = 0; i < 3; i++) {
                     // get control patches
                     for (let r = 0; r < 4; r++) {
                         for (let c = 0; c < 4; c++) {
-                            // transposed; note subtraction of 1 for index
+                            // transposed
                             g[c * 4 + r] = teacupVertices[(teacupPatches[surf * 16 + r * 4 + c] - 1) * 3 + i];
                         }
                     }
@@ -385,7 +382,6 @@
                     for (let tstep = 0; tstep <= segments; tstep++) {
                         const t = tstep / segments; // point from basis
                         // get power vectors and their derivatives
-
                         for (p = 4, sval = tval = 1.0; p--;) {
                             sp[p] = sval;
                             tp[p] = tval;
@@ -447,7 +443,6 @@
                     }
                 } // save the faces
 
-
                 for (let sstep = 0; sstep < segments; sstep++) {
                     for (let tstep = 0; tstep < segments; tstep++) {
                         const v1 = surfCount * vertPerRow * vertPerRow + sstep * vertPerRow + tstep;
@@ -476,8 +471,7 @@
             this.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
             this.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
             this.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-            // this.computeBoundingSphere();
-
+            this.computeBoundingSphere();
         }
 
     }
