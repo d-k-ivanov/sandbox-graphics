@@ -452,8 +452,8 @@
                         }   // store it all
 
                         vertices[vertCount++] = trueSize * vert[0];
-                        vertices[vertCount++] = trueSize * (vert[2] - maxHeight2);
-                        vertices[vertCount++] = - trueSize * vert[1];
+                        vertices[vertCount++] = trueSize * (vert[1] - maxHeight2);
+                        vertices[vertCount++] = - trueSize * vert[2];
                         normals[normCount++] = normOut.x;
                         normals[normCount++] = normOut.y;
                         normals[normCount++] = normOut.z;
