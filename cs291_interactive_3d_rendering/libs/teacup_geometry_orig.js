@@ -36,7 +36,8 @@
  */
 /*global THREE */
 
-THREE.TeacupGeometry = function (size, segments) {
+THREE.TeacupGeometry = function (size, segments)
+{
     "use strict";
 
     // 26 * 4 * 4 Bezier spline patches, note +1 start
@@ -381,7 +382,8 @@ THREE.TeacupGeometry = function (size, segments) {
 
     // internal function: test if triangle has any matching vertices;
     // if so, don't output, since it won't display anything.
-    var notDegenerate = function (vtx1, vtx2, vtx3) {
+    var notDegenerate = function (vtx1, vtx2, vtx3)
+    {
         if (vtx1.equals(vtx2)) { return false; }
         if (vtx1.equals(vtx3)) { return false; }
         if (vtx2.equals(vtx3)) { return false; }
@@ -389,7 +391,8 @@ THREE.TeacupGeometry = function (size, segments) {
     };
 
 
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 3; i++)
+    {
         mgm[i] = new THREE.Matrix4();
     }
 
@@ -398,12 +401,16 @@ THREE.TeacupGeometry = function (size, segments) {
     var surfCount = 0;
     //var faceCount = 0;
 
-    for (var surf = minPatches; surf < maxPatches; surf++) {
+    for (var surf = minPatches; surf < maxPatches; surf++)
+    {
         // get M * G * M matrix for x,y,z
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < 3; i++)
+        {
             // get control patches
-            for (r = 0; r < 4; r++) {
-                for (c = 0; c < 4; c++) {
+            for (r = 0; r < 4; r++)
+            {
+                for (c = 0; c < 4; c++)
+                {
                     // transposed; note subtraction of 1 for index
                     g[c * 4 + r] = TeacupVertices[(TeacupPatches[surf * 16 + r * 4 + c] - 1) * 3 + i];
                 }
@@ -423,24 +430,29 @@ THREE.TeacupGeometry = function (size, segments) {
         }
 
         // step along, get points, and output
-        for (sstep = 0; sstep <= this.segments; sstep++) {
+        for (sstep = 0; sstep <= this.segments; sstep++)
+        {
             s = sstep / this.segments;
 
-            for (tstep = 0; tstep <= this.segments; tstep++) {
+            for (tstep = 0; tstep <= this.segments; tstep++)
+            {
                 t = tstep / this.segments;
 
                 // point from basis
                 // get power vectors and their derivatives
-                for (p = 4, sval = tval = 1.0; p--;) {
+                for (p = 4, sval = tval = 1.0; p--;)
+                {
                     sp[p] = sval;
                     tp[p] = tval;
                     sval *= s;
                     tval *= t;
 
-                    if (p === 3) {
+                    if (p === 3)
+                    {
                         dsp[p] = dtp[p] = 0.0;
                         dsval = dtval = 1.0;
-                    } else {
+                    } else
+                    {
                         dsp[p] = dsval * (3 - p);
                         dtp[p] = dtval * (3 - p);
                         dsval *= s;
@@ -454,7 +466,8 @@ THREE.TeacupGeometry = function (size, segments) {
                 vdtp = new THREE.Vector4(dtp[0], dtp[1], dtp[2], dtp[3]);
 
                 // do for x,y,z
-                for (i = 0; i < 3; i++) {
+                for (i = 0; i < 3; i++)
+                {
                     // multiply power vectors times matrix to get value
                     tcoord = vsp.clone();
                     tcoord.applyMatrix4(mgm[i]);
@@ -494,18 +507,22 @@ THREE.TeacupGeometry = function (size, segments) {
         }
 
         // save the faces
-        for (sstep = 0; sstep < this.segments; sstep++) {
-            for (tstep = 0; tstep < this.segments; tstep++) {
+        for (sstep = 0; sstep < this.segments; sstep++)
+        {
+            for (tstep = 0; tstep < this.segments; tstep++)
+            {
                 v1 = surfCount * vertPerRow * vertPerRow + sstep * vertPerRow + tstep;
                 v2 = v1 + 1;
                 v3 = v2 + vertPerRow;
                 v4 = v1 + vertPerRow;
 
-                if (notDegenerate(this.vertices[v1], this.vertices[v2], this.vertices[v3])) {
+                if (notDegenerate(this.vertices[v1], this.vertices[v2], this.vertices[v3]))
+                {
                     this.faces.push(new THREE.Face3(v1, v2, v3, [normals[v1], normals[v2], normals[v3]]));
                     this.faceVertexUvs[0].push([uvs[v1], uvs[v2], uvs[v3]]);
                 }
-                if (notDegenerate(this.vertices[v1], this.vertices[v3], this.vertices[v4])) {
+                if (notDegenerate(this.vertices[v1], this.vertices[v3], this.vertices[v4]))
+                {
                     this.faces.push(new THREE.Face3(v1, v3, v4, [normals[v1], normals[v3], normals[v4]]));
                     this.faceVertexUvs[0].push([uvs[v1], uvs[v3], uvs[v4]]);
                 }

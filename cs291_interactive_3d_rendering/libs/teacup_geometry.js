@@ -1,4 +1,5 @@
-(function () {
+(function ()
+{
 
     /**
  * Tessellates the famous Utah teacup database by Martin Newell into triangles.
@@ -7,9 +8,11 @@
  *   fitLid = false, blinn = true
  */
 
-    class TeacupGeometry extends THREE.BufferGeometry {
+    class TeacupGeometry extends THREE.BufferGeometry
+    {
 
-        constructor(size = 50, segments = 10) {
+        constructor(size = 50, segments = 10)
+        {
             // 26 * 4 * 4 Bezier spline patches, note +1 start
             // Data from ftp://ftp.funet.fi/pub/sci/graphics/packages/objects/teaset.tar.Z
             const teacupPatches = [
@@ -298,7 +301,7 @@
 
             segments = Math.max(2, Math.floor(segments));
 
-            const maxHeight =  0.857954740524292;
+            const maxHeight = 0.857954740524292;
             const maxHeight2 = maxHeight / 2;
             const trueSize = size / maxHeight2; // Number of elements depends on what is needed. Subtract degenerate
 
@@ -346,7 +349,8 @@
             const notDegenerate = (vtx1, vtx2, vtx3) => // if any vertex matches, return false
                 !(vertices[vtx1 * 3] === vertices[vtx2 * 3] && vertices[vtx1 * 3 + 1] === vertices[vtx2 * 3 + 1] && vertices[vtx1 * 3 + 2] === vertices[vtx2 * 3 + 2] || vertices[vtx1 * 3] === vertices[vtx3 * 3] && vertices[vtx1 * 3 + 1] === vertices[vtx3 * 3 + 1] && vertices[vtx1 * 3 + 2] === vertices[vtx3 * 3 + 2] || vertices[vtx2 * 3] === vertices[vtx3 * 3] && vertices[vtx2 * 3 + 1] === vertices[vtx3 * 3 + 1] && vertices[vtx2 * 3 + 2] === vertices[vtx3 * 3 + 2]);
 
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 3; i++)
+            {
                 mgm[i] = new THREE.Matrix4();
             }
 
@@ -359,14 +363,16 @@
             let uvCount = 0;
             let indexCount = 0;
 
-            for (let surf = minPatches; surf < maxPatches; surf++) {
-                // lid is in the middle of the data, patches 20-27,
-                // so ignore it for this part of the loop if the lid is not desired
+            for (let surf = minPatches; surf < maxPatches; surf++)
+            {
                 // get M * G * M matrix for x,y,z
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i < 3; i++)
+                {
                     // get control patches
-                    for (let r = 0; r < 4; r++) {
-                        for (let c = 0; c < 4; c++) {
+                    for (let r = 0; r < 4; r++)
+                    {
+                        for (let c = 0; c < 4; c++)
+                        {
                             // transposed
                             g[c * 4 + r] = teacupVertices[(teacupPatches[surf * 16 + r * 4 + c] - 1) * 3 + i];
                         }
@@ -377,21 +383,26 @@
                 } // step along, get points, and output
 
 
-                for (let sstep = 0; sstep <= segments; sstep++) {
+                for (let sstep = 0; sstep <= segments; sstep++)
+                {
                     const s = sstep / segments;
-                    for (let tstep = 0; tstep <= segments; tstep++) {
+                    for (let tstep = 0; tstep <= segments; tstep++)
+                    {
                         const t = tstep / segments; // point from basis
                         // get power vectors and their derivatives
-                        for (p = 4, sval = tval = 1.0; p--;) {
+                        for (p = 4, sval = tval = 1.0; p--;)
+                        {
                             sp[p] = sval;
                             tp[p] = tval;
                             sval *= s;
                             tval *= t;
 
-                            if (p === 3) {
+                            if (p === 3)
+                            {
                                 dsp[p] = dtp[p] = 0.0;
                                 dsval = dtval = 1.0;
-                            } else {
+                            } else
+                            {
                                 dsp[p] = dsval * (3 - p);
                                 dtp[p] = dtval * (3 - p);
                                 dsval *= s;
@@ -404,7 +415,8 @@
                         vdsp.fromArray(dsp);
                         vdtp.fromArray(dtp); // do for x,y,z
 
-                        for (let i = 0; i < 3; i++) {
+                        for (let i = 0; i < 3; i++)
+                        {
                             // multiply power vectors times matrix to get value
                             tcoord = vsp.clone();
                             tcoord.applyMatrix4(mgm[i]);
@@ -424,10 +436,12 @@
                         norm.crossVectors(vtdir, vsdir);
                         norm.normalize(); // if X and Z length is 0, at the cusp, so point the normal up or down, depending on patch number
 
-                        if (vert[0] === 0 && vert[1] === 0) {
+                        if (vert[0] === 0 && vert[1] === 0)
+                        {
                             // if above the middle of the teacup, normal points up, else down
                             normOut.set(0, vert[2] > maxHeight2 ? 1 : - 1, 0);
-                        } else {
+                        } else
+                        {
                             // standard output: rotate on X axis
                             normOut.set(norm.x, norm.z, - norm.y);
                         } // store it all
@@ -443,21 +457,25 @@
                     }
                 } // save the faces
 
-                for (let sstep = 0; sstep < segments; sstep++) {
-                    for (let tstep = 0; tstep < segments; tstep++) {
+                for (let sstep = 0; sstep < segments; sstep++)
+                {
+                    for (let tstep = 0; tstep < segments; tstep++)
+                    {
                         const v1 = surfCount * vertPerRow * vertPerRow + sstep * vertPerRow + tstep;
                         const v2 = v1 + 1;
                         const v3 = v2 + vertPerRow;
                         const v4 = v1 + vertPerRow; // Normals and UVs cannot be shared. Without clone(), you can see the consequences
                         // of sharing if you call geometry.applyMatrix4( matrix ).
 
-                        if (notDegenerate(v1, v2, v3)) {
+                        if (notDegenerate(v1, v2, v3))
+                        {
                             indices[indexCount++] = v1;
                             indices[indexCount++] = v2;
                             indices[indexCount++] = v3;
                         }
 
-                        if (notDegenerate(v1, v3, v4)) {
+                        if (notDegenerate(v1, v3, v4))
+                        {
                             indices[indexCount++] = v1;
                             indices[indexCount++] = v3;
                             indices[indexCount++] = v4;
