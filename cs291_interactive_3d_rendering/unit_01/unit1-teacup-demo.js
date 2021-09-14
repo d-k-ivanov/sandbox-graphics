@@ -9,7 +9,7 @@ var effectController;
 var clock = new THREE.Clock();
 var teacupSize = 400;
 var ambientLight, light, particleLight;
-var tess = -1;	// force initialization
+var tess = -1; // force initialization
 var bCup;
 var bSaucer;
 var wire;

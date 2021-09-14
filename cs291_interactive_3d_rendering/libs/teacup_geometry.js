@@ -315,24 +315,27 @@
 
             const ms = new THREE.Matrix4();
             ms.set(-1.0, 3.0, -3.0, 1.0, 3.0, -6.0, 3.0, 0.0, -3.0, 3.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+
             const g = [];
             const sp = [];
             const tp = [];
             const dsp = [];
             const dtp = []; // M * G * M matrix, sort of see
-            // http://www.cs.helsinki.fi/group/goa/mallinnus/curves/surfaces.html
 
+            // http://www.cs.helsinki.fi/group/goa/mallinnus/curves/surfaces.html
             const mgm = [];
             const vert = [];
             const sdir = [];
             const tdir = [];
             const norm = new THREE.Vector3();
+
             let tcoord;
             let sval;
             let tval;
             let p;
             let dsval = 0;
             let dtval = 0;
+
             const normOut = new THREE.Vector3();
             const gmx = new THREE.Matrix4();
             const tmtx = new THREE.Matrix4();
@@ -342,9 +345,11 @@
             const vdtp = new THREE.Vector4();
             const vsdir = new THREE.Vector3();
             const vtdir = new THREE.Vector3();
+
             const mst = ms.clone();
-            mst.transpose(); // internal function: test if triangle has any matching vertices;
+            // internal function: test if triangle has any matching vertices;
             // if so, don't save triangle, since it won't display anything.
+            mst.transpose();
 
             const notDegenerate = (vtx1, vtx2, vtx3) => // if any vertex matches, return false
                 !(vertices[vtx1 * 3] === vertices[vtx2 * 3] && vertices[vtx1 * 3 + 1] === vertices[vtx2 * 3 + 1] && vertices[vtx1 * 3 + 2] === vertices[vtx2 * 3 + 2] || vertices[vtx1 * 3] === vertices[vtx3 * 3] && vertices[vtx1 * 3 + 1] === vertices[vtx3 * 3 + 1] && vertices[vtx1 * 3 + 2] === vertices[vtx3 * 3 + 2] || vertices[vtx2 * 3] === vertices[vtx3 * 3] && vertices[vtx2 * 3 + 1] === vertices[vtx3 * 3 + 1] && vertices[vtx2 * 3 + 2] === vertices[vtx3 * 3 + 2]);
@@ -444,7 +449,7 @@
                         {
                             // standard output: rotate on X axis
                             normOut.set(norm.x, norm.z, - norm.y);
-                        } // store it all
+                        }   // store it all
 
                         vertices[vertCount++] = trueSize * vert[0];
                         vertices[vertCount++] = trueSize * (vert[2] - maxHeight2);
@@ -464,9 +469,10 @@
                         const v1 = surfCount * vertPerRow * vertPerRow + sstep * vertPerRow + tstep;
                         const v2 = v1 + 1;
                         const v3 = v2 + vertPerRow;
-                        const v4 = v1 + vertPerRow; // Normals and UVs cannot be shared. Without clone(), you can see the consequences
-                        // of sharing if you call geometry.applyMatrix4( matrix ).
+                        const v4 = v1 + vertPerRow;
 
+                        // Normals and UVs cannot be shared. Without clone(), you can see the consequences
+                        // of sharing if you call geometry.applyMatrix4( matrix ).
                         if (notDegenerate(v1, v2, v3))
                         {
                             indices[indexCount++] = v1;
@@ -491,9 +497,7 @@
             this.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
             this.computeBoundingSphere();
         }
-
     }
 
     THREE.TeacupGeometry = TeacupGeometry;
-
 })();
