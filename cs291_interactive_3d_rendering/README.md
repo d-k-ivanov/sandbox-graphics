@@ -6,7 +6,7 @@
 avg = total_frames / total_time
 ```
 
-## Radiance:
+## Radiance
 
 ```txt
 L = light_fiexld(x0, y0, z0, x, y)
