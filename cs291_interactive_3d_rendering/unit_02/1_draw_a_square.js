@@ -97,7 +97,8 @@ function init()
     var windowWidth = windowScale * canvasRatio;
     var windowHeight = windowScale;
 
-    camera = new THREE.OrthographicCamera(windowWidth / -2, windowWidth / 2, windowHeight / 2, windowHeight / -2, 0, 40);
+    camera = new THREE.OrthographicCamera(windowWidth / -2, windowWidth / 2, windowHeight / 2,
+        windowHeight / -2, 0, 40);
 
     var focus = new THREE.Vector3(5, 5, 0);
     camera.position.x = focus.x;
@@ -154,6 +155,5 @@ try
     render();
 } catch (e)
 {
-    var errorReport = "Your program encountered an unrecoverable error, can not draw on canvas. Error was:";
     alert(e);
 }
