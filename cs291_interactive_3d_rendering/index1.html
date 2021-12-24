@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style>
+            body {
+                font-family: Monospace;
+                background-color: #F5F5F5;
+                margin: 0px;
+                overflow: hidden;
+            }
+            #container {
+                height: 492px;
+                width: 876px;
+            }
+        </style>
+        <script src="libs/webgl_detector.js"></script>
+        <script src="libs/stats.min.js"></script>
+        <script src="libs/three.js"></script>
+        <script src="libs/dat.gui.min.js"></script>
+        <script src="libs/coordinates.js"></script>
+        <script src="libs/orbit_controls.js"></script>
+        <script src="libs/trackball_controls.js"></script>
+        <script src="libs/shaders.js"></script>
+        <script src="libs/teapot_geometry.js"></script>
+        <script src="libs/teacup_geometry.js"></script>
+        <script src="libs/teaspoon_geometry.js"></script>
+        <script class="target" name="target"></script>
+    </head>
+    <body>
+        <div>
+            <BR>
+            <form align="center" name="run"><label>&nbsp;Select JS script:</label>
+            <select class="scripts" name="scripts">
+                    <option selected>Select script</option>
+                    <option value="unit_01/unit1-fps.js">Unit_1 FPS Demo</option>
+                    <option value="unit_01/unit1-teacup-demo.js">Unit_1 Teacup</option>
+                    <option value="unit_01/unit1-teapot-demo.js">Unit_1 Teaspoon</option>
+                    <option value="unit_01/unit1-teaspoon-demo.js">Unit_1 Teapot</option>
+                    <option value="unit_01/unit1-render-mode-0.js">Unit_1 Render Mode #0</option>
+                    <option value="unit_01/unit1-render-mode-1.js">Unit_1 Render Mode #1</option>
+                    <option value="unit_01/unit1-render-mode-2.js">Unit_1 Render Mode #2</option>
+                    <option value="unit_01/unit1-fix-javascript-errors.js">Unit_1 Exercise - Fix Compilation</option>
+            </select>
+            <BR><BR>
+            </form>
+        </div>
+        <div id="container">
+        </div>
+        <!-- <script src=> -->
+        <script>
+            if ( ! WebGLDetector.is_webgl_supported )
+            {
+                WebGLDetector.errorMessage();
+            }
+            else
+            {
+                const scriptList = document.querySelector('.scripts');
+
+                scriptList.addEventListener('change', (event) => {
+                    const target = document.querySelector('.target');
+                    target.setAttribute('type','text/javascript');
+                    target.setAttribute('src', `${event.target.value}`);
+                    document.getElementsByTagName('head')[0].appendChild(thescript);
+                });
+            }
+        </script>
+    </body>
+</html>

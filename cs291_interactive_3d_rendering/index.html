@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                font-family: Monospace;
+                background-color: #F5F5F5;
+                margin: 0px;
+                overflow: hidden;
+            }
+            #container {
+                height: 492px;
+                width: 876px;
+            }
+            #formItem label {
+                display: block;
+                text-align: center;
+            }
+            .fifty {
+                width: 50%;
+                float: left;
+                padding-left: 30px;
+            }
+
+        </style>
+        <script src="libs/webgl_detector.js"></script>
+        <script src="libs/stats.min.js"></script>
+        <script src="libs/three.js"></script>
+        <script src="libs/dat.gui.min.js"></script>
+        <script src="libs/coordinates.js"></script>
+        <script src="libs/orbit_controls.js"></script>
+        <script src="libs/trackball_controls.js"></script>
+        <script src="libs/shaders.js"></script>
+        <script src="libs/teapot_geometry.js"></script>
+        <script src="libs/teacup_geometry.js"></script>
+        <script src="libs/teaspoon_geometry.js"></script>
+        <script>
+            function getParameterByName(name)
+            {
+                var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+                return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+            }
+            var loadScript =  getParameterByName('script');
+            if ('undefined' !== typeof loadScript)
+            {
+                if ( loadScript !== null )
+                {
+                    var thescript = document.createElement('script');
+                    thescript.setAttribute('type','text/javascript');
+                    thescript.setAttribute('src', loadScript);
+                    document.getElementsByTagName('head')[0].appendChild(thescript);
+                }
+            }
+            else {
+                alert(loadScript);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="container">
+        </div>
+        <!-- <script src=> -->
+        <script>
+            if ( ! WebGLDetector.is_webgl_supported )
+            {
+                WebGLDetector.errorMessage();
+            }
+            else
+            {
+                elem = document.createElement("div");
+                elem.id = 'myID';
+                elem.innerHTML =
+                    ['<div class="fifty"><BR><form align="right" name="run"><label>&nbsp;Select Script:</label>',
+                            '<select name="scripts" OnChange="location.href=run.scripts.options[selectedIndex].value">',
+                            '    <option selected>Select script</option>',
+                            '    <option value="?script=unit_01/unit1-fps.js">Unit_1 FPS Demo</option>',
+                            '    <option value="?script=unit_01/unit1-teacup-demo.js">Unit_1 Teacup</option>',
+                            '    <option value="?script=unit_01/unit1-teapot-demo.js">Unit_1 Teaspoon</option>',
+                            '    <option value="?script=unit_01/unit1-teaspoon-demo.js">Unit_1 Teapot</option>',
+                            '    <option value="?script=unit_01/unit1-render-mode-0.js">Unit_1 Render Mode #0</option>',
+                            '    <option value="?script=unit_01/unit1-render-mode-1.js">Unit_1 Render Mode #1</option>',
+                            '    <option value="?script=unit_01/unit1-render-mode-2.js">Unit_1 Render Mode #2</option>',
+                            '    <option value="?load=unit_01/unit1-fix-javascript-errors.js">Unit_1 Exercise - Fix Compilation</option>',
+                            '</select><BR><BR>'].join('\n');
+                    elem.innerHTML = elem.innerHTML + "</form></div>";
+                    if ('undefined' !== typeof loadScript)
+                    {
+                        elem.innerHTML = elem.innerHTML + '<div class="fifty" align="left"><BR>Selected: ' + loadScript + "</div>";
+                    }
+                    document.body.insertBefore(elem,document.body.childNodes[0])
+            }
+        </script>
+    </body>
+</html>
