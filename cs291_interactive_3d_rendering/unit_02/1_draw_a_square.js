@@ -13,34 +13,71 @@ var windowScale;
 
 function exampleTriangle()
 {
-    // This code demonstrates how to draw a triangle
     const triangle = new THREE.BufferGeometry();
-    const vertices = []
-    vertices.push(new THREE.Vector3(1, 1, 0));
-    vertices.push(new THREE.Vector3(3, 1, 0));
-    vertices.push(new THREE.Vector3(3, 3, 0));
 
+    // Canonical way to draw a Geometry in Three.js
     // const vertices = new Float32Array([
     //     1, 1, 0,
     //     3, 1, 0,
     //     3, 3, 0
     // ]);
     // triangle.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+    // Old Geomtry Style:
+    const vertices = []
+    vertices.push(new THREE.Vector3(1, 1, 0));
+    vertices.push(new THREE.Vector3(3, 1, 0));
+    vertices.push(new THREE.Vector3(3, 3, 0));
     triangle.setFromPoints(vertices)
+
+
+    // Indices(Faces) is optional for Triangles.
+    const indices = [0, 1, 2]
+    triangle.setIndex(indices);
     return triangle;
 }
 
 function drawSquare(x1, y1, x2, y2)
 {
     var square = new THREE.BufferGeometry();
+
+    // Canonical way to draw a Geometry in Three.js
+    // const vertices = new Float32Array([
+    //     x1, y1, 0,
+    //     x2, y1, 0,
+    //     x2, y2, 0,
+    //     x1, y1, 0,
+    //     x1, y2, 0
+    //     x2, y2, 0,
+    // ]);
+
+    // Or if you plan to use indices:
+    // const vertices = new Float32Array([
+    //     x1, y1, 0,
+    //     x2, y1, 0,
+    //     x2, y2, 0,
+    //     x1, y2, 0
+    // ]);
+    // triangle.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+    // Old Geomtry Style:
     const vertices = []
     vertices.push(new THREE.Vector3(x1, y1, 0));
     vertices.push(new THREE.Vector3(x2, y1, 0));
     vertices.push(new THREE.Vector3(x2, y2, 0));
-    vertices.push(new THREE.Vector3(x1, y1, 0));
+
+    // vertices.push(new THREE.Vector3(x1, y1, 0));
     vertices.push(new THREE.Vector3(x1, y2, 0));
-    vertices.push(new THREE.Vector3(x2, y2, 0));
+    // vertices.push(new THREE.Vector3(x2, y2, 0));
     square.setFromPoints(vertices)
+
+    // Indices(Faces) can be used to draw a Square
+    // using only four vectors instead of six.
+    const indices = [
+        0, 1, 2,
+        2, 0, 3
+    ]
+    square.setIndex(indices);
     return square;
 }
 
