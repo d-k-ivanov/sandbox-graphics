@@ -1,5 +1,19 @@
 # CS 291: Interactive 3D Graphic
 
+## Average Frame Speed Formula
+
+```txt
+avg = total_frames / total_time
+```
+
+## Radiance:
+
+```txt
+L = light_fiexld(x0, y0, z0, x, y)
+```
+
+## MS per Frame Table
+
 ```txt
 1000ms / 1 fps      = 1000
 1000ms / 2 fps      = 500
