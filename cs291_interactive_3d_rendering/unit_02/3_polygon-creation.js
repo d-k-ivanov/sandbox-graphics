@@ -30,11 +30,10 @@ function PolygonGeometry(sides)
         {
             indices.push(0, pt-1, pt)
         }
-
     }
     // console.log(vertices);
-    // console.log(indices);
     geometry.setFromPoints(vertices)
+    // console.log(indices);
     geometry.setIndex(indices);
 
     return geometry;
