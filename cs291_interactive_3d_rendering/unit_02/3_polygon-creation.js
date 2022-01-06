@@ -15,9 +15,9 @@ function PolygonGeometry(sides)
 {
     var geometry = new THREE.BufferGeometry();
 
-    // generate vertices
+    // Generate Vertices and Indices
     const vertices = []
-    // const indices = []
+    const indices = []
     for (var pt = 0; pt < sides; pt++)
     {
         // Add 90 degrees so we start at +Y axis, rotate counterclockwise around
@@ -26,15 +26,15 @@ function PolygonGeometry(sides)
         var y = Math.sin(angle);
         // console.log("X:" + x + ",\t "+ "Y:" + y);
         vertices.push(new THREE.Vector3(x, y, 0));
+        if(pt >=2)
+        {
+            indices.push(0, pt-1, pt)
+        }
+
     }
     // console.log(vertices);
+    // console.log(indices);
     geometry.setFromPoints(vertices)
-
-    const indices = [
-        0, 1, 2,
-        0, 2, 3,
-        0, 3, 4
-    ]
     geometry.setIndex(indices);
 
     return geometry;
