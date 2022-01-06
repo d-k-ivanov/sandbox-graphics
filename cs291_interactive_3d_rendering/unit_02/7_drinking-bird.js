@@ -43,6 +43,7 @@ function createSupport(wireframe = false)
 {
     let cube;
     let cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xF07020, wireframe });
+    let legMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
 
     // base
     cube = new THREE.Mesh(new THREE.BoxGeometry(20 + 64 + 110, 4, 2 * 77), cubeMaterial);
@@ -59,7 +60,7 @@ function createSupport(wireframe = false)
     scene.add(cube);
 
     // left leg
-    cube = new THREE.Mesh(new THREE.BoxGeometry(64, 334 + 52, 6), cubeMaterial);
+    cube = new THREE.Mesh(new THREE.BoxGeometry(64, 334 + 52, 6), legMaterial);
     cube.position.x = 0;            // centered on origin along X
     cube.position.y = (334 + 52) / 2;
     cube.position.z = 77 + 6 / 2;   // offset 77 + half of depth 6/2
@@ -69,11 +70,11 @@ function createSupport(wireframe = false)
     cube = new THREE.Mesh(new THREE.BoxGeometry(20 + 64 + 110, 52, 6), cubeMaterial);
     cube.position.x = -45;          // (20+32) - half of width (20+64+110)/2
     cube.position.y = 52 / 2;       // half of height
-    cube.position.z = -77 + 6 / 2;   // offset 77 + half of depth 6/2
+    cube.position.z = -77 + 6 / 2;  // offset 77 + half of depth 6/2
     scene.add(cube);
 
     // right leg
-    cube = new THREE.Mesh(new THREE.BoxGeometry(64, 334 + 52, 6), cubeMaterial);
+    cube = new THREE.Mesh(new THREE.BoxGeometry(64, 334 + 52, 6), legMaterial);
     cube.position.x = 0;            // centered on origin along X
     cube.position.y = (334 + 52) / 2;
     cube.position.z = -77 + 6 / 2;   // offset 77 + half of depth 6/2
@@ -210,7 +211,11 @@ function render()
 {
     var delta = clock.getDelta();
     cameraControls.update(delta);
-    if (effectController.newGridX !== gridX || effectController.newGridY !== gridY || effectController.newGridZ !== gridZ || effectController.newGround !== ground || effectController.newAxes !== axes)
+    if (effectController.newGridX !== gridX ||
+        effectController.newGridY !== gridY ||
+        effectController.newGridZ !== gridZ ||
+        effectController.newGround !== ground ||
+        effectController.newAxes !== axes)
     {
         gridX = effectController.newGridX;
         gridY = effectController.newGridY;
