@@ -19,7 +19,7 @@ var teaspoon;
 function init()
 {
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight;
+    var canvasHeight = window.innerHeight-50;
 
     // CAMERA
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 80000);
@@ -87,7 +87,7 @@ function init()
 function onWindowResize()
 {
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight;
+    var canvasHeight = window.innerHeight-50;
 
     renderer.setSize(canvasWidth, canvasHeight);
 

@@ -38,7 +38,7 @@ function addToDOM()
 function init()
 {
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight;
+    var canvasHeight = window.innerHeight-50;
     var canvasRatio = canvasWidth / canvasHeight;
 
     // CAMERA

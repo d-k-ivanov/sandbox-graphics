@@ -24,7 +24,7 @@ function addToDOM()
 function init()
 {
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight;
+    var canvasHeight = window.innerHeight-50;
 
     // CAMERA
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 4000);

@@ -3,25 +3,41 @@
 # python >= 3.4
 
 import http.server
-from http.server import HTTPServer, BaseHTTPRequestHandler
 import socketserver
 
-PORT = 8080
+class SimpleHTTPRequestHandlerNoCache(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.no_cache_headers()
+        http.server.SimpleHTTPRequestHandler.end_headers(self)
 
-Handler = http.server.SimpleHTTPRequestHandler
+    def no_cache_headers(self):
+        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
 
-Handler.extensions_map={
-    '.manifest': 'text/cache-manifest',
-    '.html': 'text/html',
-    '.png': 'image/png',
-    '.jpg': 'image/jpg',
-    '.svg': 'image/svg+xml',
-    '.css': 'text/css',
-    '.js': 'application/x-javascript',
-    '': 'application/octet-stream', # Default
-}
 
-httpd = socketserver.TCPServer(("", PORT), Handler)
+if __name__ == '__main__':
+    PORT = 8080
+    # Handler = http.server.SimpleHTTPRequestHandler # Default
+    Handler = SimpleHTTPRequestHandlerNoCache
 
-print("serving at port", PORT)
-httpd.serve_forever()
+    Handler.extensions_map={
+        '.css': 'text/css',
+        '.html': 'text/html',
+        '.jpg': 'image/jpg',
+        '.js': 'application/x-javascript',
+        '.manifest': 'text/cache-manifest',
+        '.png': 'image/png',
+        '.svg': 'image/svg+xml',
+        '.webapp': 'application/x-web-app-manifest+json',
+        '': 'application/octet-stream', # Default
+    }
+    httpd = socketserver.TCPServer(("", PORT), Handler)
+
+    print("Server started at http://localhost:" + str(PORT))
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("Stopping http server...")
+        httpd.shutdown()
+        httpd.server_close()

@@ -34,11 +34,9 @@ function init(params)
 {
     params = params || {};
     var gridScale = params.gridScale !== undefined ? params.gridScale : 0.01;
-    // var canvasWidth = 846;
-    // var canvasHeight = 494;
     // For grading the window is fixed in size; here's general code:
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight;
+    var canvasHeight = window.innerHeight-50;
     var canvasRatio = canvasWidth / canvasHeight;
     // SCENE
     scene = new THREE.Scene();

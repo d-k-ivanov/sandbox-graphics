@@ -83,11 +83,8 @@ function drawSquare(x1, y1, x2, y2)
 
 function init()
 {
-    // Fixed Canvas Size
-    // var canvasWidth = 846;
-    // var canvasHeight = 494;
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight;
+    var canvasHeight = window.innerHeight-50;
     var canvasRatio = canvasWidth / canvasHeight;
     // scene
     scene = new THREE.Scene();
@@ -97,8 +94,11 @@ function init()
     var windowWidth = windowScale * canvasRatio;
     var windowHeight = windowScale;
 
-    camera = new THREE.OrthographicCamera(windowWidth / -2, windowWidth / 2, windowHeight / 2,
-        windowHeight / -2, 0, 40);
+    camera = new THREE.OrthographicCamera(
+        windowWidth / -2, windowWidth / 2,
+        windowHeight / 2, windowHeight / -2,
+        0, 40
+    );
 
     var focus = new THREE.Vector3(5, 5, 0);
     camera.position.x = focus.x;

@@ -12,15 +12,16 @@
                 overflow: hidden;
             }
             #container {
-                height: 492px;
-                width: 876px;
+                width: 100%;
+                height: 100%;
             }
             #formItem label {
                 display: block;
                 text-align: center;
             }
-            .fifty {
+            .header {
                 width: 50%;
+                height: 50px;
                 float: left;
                 padding-left: 30px;
             }
@@ -61,8 +62,8 @@
     </head>
     <body>
         <div id="container">
-        </div>
         <!-- <script src=> -->
+        </div>
         <script>
             if ( ! WebGLDetector.is_webgl_supported )
             {
@@ -71,9 +72,9 @@
             else
             {
                 elem = document.createElement("div");
-                elem.id = 'myID';
+                elem.id = 'root';
                 elem.innerHTML =
-                    ['<div class="fifty"><BR><form align="right" name="run"><label>&nbsp;Select Script:</label>',
+                    ['<div class="header"><BR><form align="right" name="run"><label>&nbsp;Select Script:</label>',
                             '<select name="scripts" OnChange="location.href=run.scripts.options[selectedIndex].value">',
                             '    <option selected>Select script</option>',
                             '    <option value="?script=unit_01/unit1-fps.js">Unit_1 FPS Demo</option>',
@@ -86,11 +87,14 @@
                             '    <option value="?script=unit_01/unit1-fix-javascript-errors.js">Unit_1 Exercise - Fix Compilation</option>',
                             '    <option value="?script=unit_02/1_draw_a_square.js">Unit_2 Draw a Square</option>',
                             '    <option value="?script=unit_02/2_vertex_order.js">Unit_2 Vertex Order</option>',
+                            '    <option value="?script=unit_02/3_polygon-creation.js">Unit_2 Polygon Creation</option>',
+                            '    <option value="?script=unit_02/3_z_fighting.js">Unit_2 Z fighting</option>',
+                            '    <option value="?script=unit_02/3_z_fighting_fixed.js">Unit_2 Z Fighting Fixed</option>',
                             '</select><BR><BR>'].join('\n');
                     elem.innerHTML = elem.innerHTML + "</form></div>";
                     if ('undefined' !== typeof loadScript)
                     {
-                        elem.innerHTML = elem.innerHTML + '<div class="fifty" align="left"><BR>Selected: ' + loadScript + "</div>";
+                        elem.innerHTML = elem.innerHTML + '<div class="header" align="left"><BR>Selected: ' + loadScript + "</div>";
                     }
                     document.body.insertBefore(elem,document.body.childNodes[0])
             }
