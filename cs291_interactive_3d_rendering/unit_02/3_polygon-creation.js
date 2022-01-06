@@ -100,6 +100,7 @@ try
     init();
     showGrids();
     var geo = PolygonGeometry(5);
+    // var geo = PolygonGeometry(6);
     var material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.FrontSide });
     var mesh = new THREE.Mesh(geo, material);
     scene.add(mesh);
