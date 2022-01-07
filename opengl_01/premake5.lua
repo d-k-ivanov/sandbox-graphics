@@ -22,6 +22,7 @@ premake.override(premake.vstudio.sln2005, "projects", function(base, wks)
     base(wks)
 end)
 
+include("conanbuildinfo.premake.lua")
 
 workspace "OpenGL"
     startproject "Demo"
@@ -104,13 +105,14 @@ project "Other"
         ".editorconfig",
         ".gitignore",
         "commit_now.ps1",
+        "conanfile.txt",
         "gen_solution.bat",
         "premake5.lua"
     }
 
     vpaths
     {
-        ["Build/*"] = { "**.lua", "**.bat" },
+        ["Build/*"] = { "**.lua", "**.bat", "conanfile.txt" },
         ["Git/*"]   = { ".gitignore", "commit_now.ps1", ".editorconfig" }
     }
 
