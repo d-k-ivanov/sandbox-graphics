@@ -9,9 +9,9 @@
 int main(int argc, char* argv[], char* env[])
 {
     // To turn off messages about unused variables.
-    ((void)argc );
-    ((void)argv );
-    ((void)env );
+    ((void)argc);
+    ((void)argv);
+    ((void)env);
 
     #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
