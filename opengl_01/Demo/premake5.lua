@@ -1,7 +1,8 @@
 project "Demo"
-    kind "ConsoleApp"
+    kind "WindowedApp"
     language "C++"
     cppdialect "C++20"
+    entrypoint "mainCRTStartup"
 
     files
     {

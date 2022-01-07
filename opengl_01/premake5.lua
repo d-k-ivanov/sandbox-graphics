@@ -25,6 +25,7 @@ end)
 include("conanbuildinfo.premake.lua")
 
 workspace "OpenGL"
+    conan_basic_setup()
     startproject "Demo"
 
     configurations { "Debug", "Release", "RelDebug" }
@@ -112,7 +113,7 @@ project "Other"
 
     vpaths
     {
-        ["Build/*"] = { "**.lua", "**.bat", "conanfile.txt" },
+        ["Build/*"] = { "**.lua", "**.bat", "conanfile.txt", "conanbuildinfo.premake.lua" },
         ["Git/*"]   = { ".gitignore", "commit_now.ps1", ".editorconfig" }
     }
 

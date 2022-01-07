@@ -5,20 +5,21 @@
 #include <iosfwd>
 
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
+// #ifdef _WIN32
+// #include <Windows.h>
+// #endif
 
-int main(int argc, char* argv[], char* env[])
+int main(const int argc, char* argv[], char* env[])
 {
     // To turn off messages about unused variables.
     ((void)argc);
     ((void)argv);
     ((void)env);
 
-    #ifdef _WIN32
-    SetConsoleOutputCP(CP_UTF8);
-    #endif
+    // #ifdef _WIN32
+    // SetConsoleOutputCP(CP_UTF8);
+    // ShowWindow(GetConsoleWindow(), SW_HIDE);
+    // #endif
 
     GLFWwindow* window;
 
@@ -27,7 +28,7 @@ int main(int argc, char* argv[], char* env[])
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
     if (!window)
     {
         glfwTerminate();
