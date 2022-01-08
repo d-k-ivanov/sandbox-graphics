@@ -9,6 +9,20 @@ var cameraControls;
 var clock = new THREE.Clock();
 var ambientLight, light;
 
+var ball, material;
+var effectController;
+
+function setupGui()
+{
+    effectController = {
+        smoothing: false
+    };
+
+    var gui = new dat.GUI();
+    var element = gui.add(effectController, "smoothing");
+    element.name("Smoothing");
+}
+
 function init()
 {
     var canvasWidth = window.innerWidth;
@@ -30,19 +44,26 @@ function init()
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(canvasWidth, canvasHeight);
     renderer.setClearColor(new THREE.Color(0xAAAAAA), 1.0);
-
-    renderer.gammaInput = true;
-    renderer.gammaOutput = true;
+    renderer.outputEncoding = THREE.sRGBEncoding;
 
     // CONTROLS
     cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
     cameraControls.target.set(0, 0, 0);
+
+    setupGui();
 }
 
 function createBall()
 {
     // Do not change the color itself, change the material and use the ambient and diffuse components.
-    var material = new THREE.MeshLambertMaterial({ color: 0x80FC66 * 0.4, shading: THREE.FlatShading });
+    // Shading Property deprecated
+    // var material = new THREE.MeshLambertMaterial({ color: 0x80FC66 * 0.4, shading: THREE.FlatShading });
+
+    // material = new THREE.MeshLambertMaterial({ color: 0x80FC66 * 0.4 });
+    // material.dithering = true;
+
+    material = new THREE.MeshPhongMaterial({ color: 0x80FC66 * 0.4, flatShading: true });
+
     // let m_color_r = material.color.r;
     // let m_color_g = material.color.g;
     // let m_color_b = material.color.b;
@@ -60,7 +81,7 @@ function fillScene()
     scene.add(ambientLight);
     scene.add(light);
 
-    var ball = createBall();
+    ball = createBall();
     scene.add(ball);
 
     // Coordinates.drawGround({size:1000});
@@ -72,10 +93,10 @@ function addToDOM()
 {
     var container = document.getElementById('container');
     var canvas = container.getElementsByTagName('canvas');
-    if (canvas.length > 0)
-    {
-        container.removeChild(canvas[0]);
-    }
+    // if (canvas.length > 0)
+    // {
+    //     container.removeChild(canvas[0]);
+    // }
     container.appendChild(renderer.domElement);
 }
 
@@ -89,6 +110,16 @@ function render()
 {
     var delta = clock.getDelta();
     cameraControls.update(delta);
+    if (effectController.smoothing)
+    {
+        ball.material.flatShading = false;
+        ball.material.needsUpdate = true;
+    }
+    else
+    {
+        ball.material.flatShading = true;
+        ball.material.needsUpdate = true;
+    }
     renderer.render(scene, camera);
 }
 
