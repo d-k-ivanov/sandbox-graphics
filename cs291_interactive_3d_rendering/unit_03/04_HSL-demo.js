@@ -28,7 +28,7 @@ function init()
     scene.add(ambientLight);
 
     light = new THREE.DirectionalLight(0xffffff, 1.0);
-    light.position.set(-620, 390, 100);
+    light.position.set(-6200, 3900, 1000);
     scene.add(light);
 
     // RENDERER
@@ -46,8 +46,9 @@ function init()
     cameraControls.target.set(0, 0, 0);
 
     // MATERIAL
-    material = new THREE.MeshLambertMaterial({ color: 0x80fc66 });
-    // material = new THREE.MeshPhongMaterial({ color: 0x80fc66 });
+    // material = new THREE.MeshLambertMaterial({ color: 0x80fc66 });
+    material = new THREE.MeshPhongMaterial({ color: 0x80fc66 });
+    material.specular = new THREE.Color(0x000000)
     var ka = 0.4;
     // material.color.setRGB(material.color.r * ka, material.color.g * ka, material.color.b * ka);
     ambientLight.color.setRGB(material.color.r * ka, material.color.g * ka, material.color.b * ka);
