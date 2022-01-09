@@ -138,7 +138,11 @@ function render()
     var delta = clock.getDelta();
     cameraControls.update(delta);
 
-    if (effectController.newGridX !== gridX || effectController.newGridY !== gridY || effectController.newGridZ !== gridZ || effectController.newGround !== ground || effectController.newAxes !== axes)
+    if (effectController.newGridX !== gridX ||
+        effectController.newGridY !== gridY ||
+        effectController.newGridZ !== gridZ ||
+        effectController.newGround !== ground ||
+        effectController.newAxes !== axes)
     {
         gridX = effectController.newGridX;
         gridY = effectController.newGridY;
