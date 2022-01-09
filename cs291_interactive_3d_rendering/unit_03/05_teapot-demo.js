@@ -85,7 +85,7 @@ function init()
 function onWindowResize()
 {
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight;
+    var canvasHeight = window.innerHeight - 50;
     renderer.setSize(canvasWidth, canvasHeight);
     camera.aspect = canvasWidth / canvasHeight;
     camera.updateProjectionMatrix();
