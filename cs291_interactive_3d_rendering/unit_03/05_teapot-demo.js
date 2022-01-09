@@ -1,39 +1,39 @@
 "use strict";
-
-// Newell Teaspoon demo
 /*global THREE, requestAnimationFrame, dat, window */
 
 var camera, scene, renderer;
 var cameraControls;
 var effectController;
 var clock = new THREE.Clock();
-var teaspoonSize = 400;
+var teapotSize = 400;
 var ambientLight, light;
 var tess = -1;	// force initialization
 var wire;
 var flat;
 var phong;
 var flatGouraudMaterial, flatPhongMaterial, gouraudMaterial, phongMaterial, wireMaterial;
-var teaspoon;
+var teapot;
 
 function init()
 {
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight-50;
+    var canvasHeight = window.innerHeight - 50;
 
     // CAMERA
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 80000);
-    camera.position.set(-600, 550, 1000);
+    camera.position.set(-600, 550, 1300);
 
     // LIGHTS
-    ambientLight = new THREE.AmbientLight(0x333333);	// 0.2
+    ambientLight = new THREE.AmbientLight(0x333333); // 0.2
+
     light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
     // direction is set in GUI
 
     // RENDERER
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(canvasWidth, canvasHeight);
-    renderer.setClearColor(new THREE.Color(0xAAAAAA, 1.0));
+    renderer.setClearColor(new THREE.Color(0xAAAAAA), 1.0);
+    renderer.outputEncoding = THREE.sRGBEncoding;
 
     var container = document.getElementById('container');
     container.appendChild(renderer.domElement);
@@ -42,9 +42,8 @@ function init()
     window.addEventListener('resize', onWindowResize, false);
 
     // CONTROLS
-    cameraControls = new THREE.TrackballControls(camera, renderer.domElement);
+    cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
     cameraControls.target.set(0, 0, 0);
-
 
     // MATERIALS
     // Note: setting per pixel off does not affect the specular highlight;
@@ -83,14 +82,11 @@ function init()
 }
 
 // EVENT HANDLERS
-
 function onWindowResize()
 {
     var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight-50;
-
+    var canvasHeight = window.innerHeight;
     renderer.setSize(canvasWidth, canvasHeight);
-
     camera.aspect = canvasWidth / canvasHeight;
     camera.updateProjectionMatrix();
 }
@@ -98,15 +94,14 @@ function onWindowResize()
 function setupGui()
 {
     effectController = {
-
         shininess: 100.0,
         ka: 0.2,
         kd: 0.7,
         ks: 0.7,
         metallic: false,
 
-        hue: 0.53,
-        saturation: 0.01,
+        hue: 0.09,
+        saturation: 0.46,
         lightness: 0.9,
 
         lhue: 0.04,
@@ -125,7 +120,6 @@ function setupGui()
     };
 
     var h;
-
     var gui = new dat.GUI();
 
     // material (attributes)
@@ -170,8 +164,8 @@ function animate()
 function render()
 {
     var delta = clock.getDelta();
-
     cameraControls.update(delta);
+
     if (effectController.newTess !== tess || effectController.newFlat !== flat || effectController.newPhong !== phong || effectController.newWire !== wire)
     {
         tess = effectController.newTess;
@@ -242,29 +236,28 @@ function createShaderMaterial(id, light, ambientLight)
 
 function fillScene()
 {
-
     // Coordinates.drawAllAxes({axisLength:1000,axisRadius:5,axisTess:50});
-    if (teaspoon !== undefined)
+    if (teapot !== undefined)
     {
-        teaspoon.geometry.dispose();
-        scene.remove(teaspoon);
+        teapot.geometry.dispose();
+        scene.remove(teapot);
     }
 
-    teaspoon = new THREE.Mesh(
-        new THREE.TeaspoonGeometry(teaspoonSize, tess),
+    var teapot = new THREE.Mesh(
+        new THREE.TeapotGeometry(teapotSize, tess, true, true, true, true),
         wire ? wireMaterial : (
             flat ?
                 (phong ? flatPhongMaterial : flatGouraudMaterial) :
                 (phong ? phongMaterial : gouraudMaterial)));
 
-    scene.add(teaspoon);
+    scene.add(teapot);
 }
 
-init();
-animate();
-
-
-
-
-
-
+try
+{
+    init();
+    animate();
+} catch (e)
+{
+    alert(e);
+}

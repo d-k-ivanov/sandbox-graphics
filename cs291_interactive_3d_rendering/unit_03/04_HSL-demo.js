@@ -47,6 +47,7 @@ function init()
 
     // MATERIAL
     // material = new THREE.MeshLambertMaterial({ color: 0x80fc66 });
+    // material = new THREE.MeshPhongMaterial({ color: 0x80fc66, flatShading: true });
     material = new THREE.MeshPhongMaterial({ color: 0x80fc66 });
     material.specular = new THREE.Color(0x000000)
     var ka = 0.4;
