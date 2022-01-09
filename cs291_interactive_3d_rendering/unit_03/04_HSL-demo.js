@@ -40,7 +40,6 @@ function init()
     var container = document.getElementById('container');
     container.appendChild(renderer.domElement);
 
-
     // CONTROLS
     cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
     cameraControls.target.set(0, 0, 0);
