@@ -1,7 +1,7 @@
 "use strict";
 
-// Capsule creation: add spheres so that method creates capsules (cheese logs)
-// Your task is to modify the createCapsule function
+// Helix: replace spheres with capsules (cheese logs)
+// Your task is to modify the createHelix function
 
 /*global THREE, Coordinates, document, window, dat, $*/
 
@@ -15,10 +15,73 @@ var axes = true;
 var ground = true;
 
 /**
+* Returns a THREE.Object3D helix going from top to bottom positions
+* @param material - THREE.Material
+* @param radius - radius of helix itself
+* @param tube - radius of tube
+* @param radialSegments - number of capsules around a full circle
+* @param tubularSegments - tessellation around equator of each tube
+* @param height - height to extend, from *center* of tube ends along Y axis
+* @param arc - how many times to go around the Y axis; currently just an integer
+* @param clockwise - if true, go counterclockwise up the axis
+*/
+function createHelix(material, radius, tube, radialSegments, tubularSegments, height, arc, clockwise)
+{
+    // defaults
+    tubularSegments = (tubularSegments === undefined) ? 32 : tubularSegments;
+    arc = (arc === undefined) ? 1 : arc;
+    clockwise = (clockwise === undefined) ? true : clockwise;
+
+    var helix = new THREE.Object3D();
+    var top = new THREE.Vector3();
+    var bottom = new THREE.Vector3();
+    bottom.set(radius, 0-(height / 2), 0);
+    var sine_sign = clockwise ? 1 : -1;
+
+    let openTop = false
+    let openBottom = true
+
+    ///////////////
+    // YOUR CODE HERE
+    // remove spheres, use capsules instead, going from point to point.
+    // var sphGeom = new THREE.SphereGeometry(tube, tubularSegments, tubularSegments / 2);
+    for (var i = 0; i <= arc * radialSegments; i++)
+    {
+        // going from X to Z axis
+        top.set(
+            radius * Math.cos((i+1) * 2 * Math.PI / radialSegments),
+            height * ((i+1) / (arc * radialSegments)) - height / 2,
+            sine_sign * radius * Math.sin((i+1) * 2 * Math.PI / radialSegments)
+        );
+
+        // bottom.set(
+        //     radius * Math.cos(i * 2 * Math.PI / radialSegments),
+        //     height * (i / (arc * radialSegments)) - height / 2,
+        //     sine_sign * radius * Math.sin(i * 2 * Math.PI / radialSegments)
+        // );
+
+        // var sphere = new THREE.Mesh(sphGeom, material);
+        // sphere.position.copy(top);
+
+        if(i == 0)
+        {
+            openBottom = false;
+        }
+
+        let capsule = createCapsule(material, tube, top, bottom, tubularSegments, openTop, openBottom);
+        helix.add(capsule);
+        // bottom.set(top.x,top.y,top.z,)
+        bottom.copy(top);
+    }
+    return helix;
+}
+
+/**
 * Returns a THREE.Object3D cylinder and spheres going from top to bottom positions
 * @param material - THREE.Material
 * @param radius - the radius of the capsule's cylinder
-* @param top, bottom - THREE.Vector3, top and bottom positions of cone
+* @param top - THREE.Vector3, top position of cone
+* @param bottom - THREE.Vector3, bottom position of cone
 * @param segmentsWidth - tessellation around equator, like radiusSegments in CylinderGeometry
 * @param openTop, openBottom - whether the end is given a sphere; true means they are not
 */
@@ -48,26 +111,22 @@ function createCapsule(material, radius, top, bottom, segmentsWidth, openTop, op
 
     var capsule = new THREE.Object3D();
     capsule.add(cyl);
-
-    // Here's a sphere's geometry.
-    // Use it to cap the cylinder if openTop and/or openBottom is false.
-    // Bonus points: use instancing!
-    var sphGeom = new THREE.SphereGeometry(radius, segmentsWidth, segmentsWidth / 2);
-
-    if(!openTop)
+    if (!openTop || !openBottom)
     {
-        var sphereTop = new THREE.Mesh(sphGeom, material);
-        sphereTop.matrixAutoUpdate = false;
-        sphereTop.matrix.makeTranslation(top.x, top.y, top.z);
-        capsule.add(sphereTop);
-    }
-
-    if(!openBottom)
-    {
-        var sphereBottom = new THREE.Mesh(sphGeom, material);
-        sphereBottom.matrixAutoUpdate = false;
-        sphereBottom.matrix.makeTranslation(bottom.x, bottom.y, bottom.z);
-        capsule.add(sphereBottom);
+        // instance geometry
+        var sphGeom = new THREE.SphereGeometry(radius, segmentsWidth, segmentsWidth / 2);
+        if (!openTop)
+        {
+            var sphTop = new THREE.Mesh(sphGeom, material);
+            sphTop.position.set(top.x, top.y, top.z);
+            capsule.add(sphTop);
+        }
+        if (!openBottom)
+        {
+            var sphBottom = new THREE.Mesh(sphGeom, material);
+            sphBottom.position.set(bottom.x, bottom.y, bottom.z);
+            capsule.add(sphBottom);
+        }
     }
 
     return capsule;
@@ -134,65 +193,57 @@ function fillScene()
     var cyanMaterial = new THREE.MeshLambertMaterial({ color: 0x00FFFF });
     var magentaMaterial = new THREE.MeshLambertMaterial({ color: 0xFF00FF });
 
-    var radius = 20;
-    var segmentsWidth = 32;
-    var capsule;
+    var radius = 60;
+    var tube = 10;
+    var radialSegments = 24;
+    // var radialSegments = 64;
+    var height = 300;
+    var segmentsWidth = 12;
+    var arc = 2;
 
-    // along Y axis
-    capsule = new createCapsule(greenMaterial,
-        radius,
-        new THREE.Vector3(0, 300, 0),
-        new THREE.Vector3(0, 0, 0),
-        segmentsWidth, false, false);
-    scene.add(capsule);
+    var helix;
+    helix = createHelix(redMaterial, radius, tube, radialSegments, segmentsWidth, height, arc, true);
+    helix.position.y = height / 2;
+    scene.add(helix);
 
-    // along X axis
-    capsule = new createCapsule(redMaterial,
-        radius,
-        new THREE.Vector3(300, 0, 0),
-        new THREE.Vector3(0, 0, 0),
-        segmentsWidth, false, true);
-    scene.add(capsule);
+    helix = createHelix(greenMaterial, radius / 2, tube, radialSegments, segmentsWidth, height, arc, false);
+    helix.position.y = height / 2;
+    scene.add(helix);
 
-    // along Z axis
-    capsule = new createCapsule(blueMaterial,
-        radius,
-        new THREE.Vector3(0, 0, 300),
-        new THREE.Vector3(0, 0, 0),
-        segmentsWidth, false, true);
-    scene.add(capsule);
+    // DNA
+    helix = createHelix(blueMaterial, radius, tube / 2, radialSegments, segmentsWidth, height, arc, false);
+    helix.position.y = height / 2;
+    helix.position.z = 2.5 * radius;
+    scene.add(helix);
 
-    // along XYZ axis
-    capsule = new createCapsule(grayMaterial,
-        radius,
-        new THREE.Vector3(200, 200, 200),
-        new THREE.Vector3(0, 0, 0),
-        segmentsWidth, false, true);
-    scene.add(capsule);
+    helix = createHelix(blueMaterial, radius, tube / 2, radialSegments, segmentsWidth, height, arc, false);
+    helix.rotation.y = 120 * Math.PI / 180;
+    helix.position.y = height / 2;
+    helix.position.z = 2.5 * radius;
+    scene.add(helix);
 
-    // along -Y axis, translated in XYZ
-    capsule = new createCapsule(yellowMaterial,
-        radius,
-        new THREE.Vector3(50, 100, -200),
-        new THREE.Vector3(50, 300, -200),
-        segmentsWidth, false, true);
-    scene.add(capsule);
+    helix = createHelix(grayMaterial, radius, tube / 2, radialSegments, segmentsWidth, height / 2, arc, true);
+    helix.position.y = height / 2;
+    helix.position.x = 2.5 * radius;
+    scene.add(helix);
 
-    // along X axis, from top of previous capsule
-    capsule = new createCapsule(cyanMaterial,
-        radius,
-        new THREE.Vector3(50, 300, -200),
-        new THREE.Vector3(250, 300, -200),
-        segmentsWidth, false, true);
-    scene.add(capsule);
+    helix = createHelix(yellowMaterial, 0.75 * radius, tube / 2, radialSegments, segmentsWidth, height, 4 * arc, false);
+    helix.position.y = height / 2;
+    helix.position.x = 2.5 * radius;
+    helix.position.z = -2.5 * radius;
+    scene.add(helix);
 
-    // continue from bottom of previous capsule
-    capsule = new createCapsule(magentaMaterial,
-        radius,
-        new THREE.Vector3(250, 300, -200),
-        new THREE.Vector3(-150, 100, 0),
-        segmentsWidth, false, false);
-    scene.add(capsule);
+    helix = createHelix(cyanMaterial, 0.75 * radius, 4 * tube, radialSegments, segmentsWidth, height, 2 * arc, false);
+    helix.position.y = height / 2;
+    helix.position.x = 2.5 * radius;
+    helix.position.z = 2.5 * radius;
+    scene.add(helix);
+
+    helix = createHelix(magentaMaterial, radius, tube, radialSegments, segmentsWidth, height, arc, true);
+    helix.rotation.x = 45 * Math.PI / 180;
+    helix.position.y = height / 2;
+    helix.position.z = -2.5 * radius;
+    scene.add(helix);
 }
 
 function init()
@@ -209,8 +260,8 @@ function init()
 
     // CAMERA
     camera = new THREE.PerspectiveCamera(40, canvasRatio, 1, 10000);
-    camera.position.set(-528, 513, 92);
 
+    camera.position.set(-528, 513, 92);
     // CONTROLS
     cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
     cameraControls.target.set(0, 200, 0);
@@ -279,7 +330,6 @@ function render()
 
 function setupGui()
 {
-
     effectController = {
 
         newGridX: gridX,
