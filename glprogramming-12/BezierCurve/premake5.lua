@@ -6,7 +6,12 @@ project "BezierCurve"
     files
     {
         "**.c",
+        "**.cc",
+        "**.cpp",
+        "**.cxx",
         "**.h",
+        "**.hpp",
+        "**.hxx",
         "**.lua",
         "**.md",
     }

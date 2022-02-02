@@ -26,13 +26,13 @@ include("conanbuildinfo.premake.lua")
 
 workspace "OpenGL"
     conan_basic_setup()
-    startproject "Demo"
+    startproject "BezierCurve"
 
-    configurations { "Debug", "Release", "RelDebug" }
+    configurations { "RelDebug", "Release", "Debug" }
     platforms { "x64", "x86"}
     warnings "Extra"
 
-    flags {"MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers"}
+    flags {"FatalWarnings" ,"MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers"}
 
     targetdir ("bin/%{prj.name}/%{cfg.buildcfg}-%{cfg.architecture}")
     debugdir ("bin/%{prj.name}/%{cfg.buildcfg}-%{cfg.architecture}")
@@ -90,7 +90,7 @@ workspace "OpenGL"
         linkoptions "-Wl,--no-undefined"
         defines({ "LINUX", "_LINUX", "COMPILER_GCC", "POSIX" })
 
-    filter "files:**.cpp or **.cxx or **.cc"
+    filter "files:**.c or **.cc or **.cpp or **.cxx"
         strictaliasing "Level3"
 
     filter({})
