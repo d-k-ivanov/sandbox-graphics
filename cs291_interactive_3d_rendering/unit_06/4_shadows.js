@@ -1,19 +1,41 @@
 "use strict";
 
-// Adding a spotlight
+// Adding shadows to a spotlight
 
-/*global THREE, Coordinates, document, window, $*/
+/* global THREE, Coordinates, document, window, dat, $ */
 
 var camera, scene, renderer;
 var cameraControls;
-
+var effectController;
 var clock = new THREE.Clock();
 
 var cylinder, sphere, cube;
-
 var bevelRadius = 1.9; // TODO: 2.0 causes some geometry bug.
-
 var headlight;
+var spotlight;
+
+function init()
+{
+    var canvasWidth = window.innerWidth;
+    var canvasHeight = window.innerHeight - 50;
+    var canvasRatio = canvasWidth / canvasHeight;
+
+    // RENDERER
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setSize(canvasWidth, canvasHeight);
+    renderer.setClearColor(new THREE.Color(0x0), 1.0);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
+    // CAMERA
+    camera = new THREE.PerspectiveCamera(35, canvasRatio, 1, 4000);
+    camera.position.set(-1160, 350, -600);
+
+    // CONTROLS
+    cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
+    cameraControls.target.set(0, 310, 0);
+}
 
 function fillScene()
 {
@@ -21,30 +43,39 @@ function fillScene()
     scene.fog = new THREE.Fog(0x0, 2000, 4000);
 
     // LIGHTS
-    // scene.add(new THREE.AmbientLight(0x222222));
+    scene.add(new THREE.AmbientLight(0x222222, 0.5));
 
     headlight = new THREE.PointLight(0x606060, 1.0);
     // scene.add(headlight);
 
-    ///////////////////////////////////
-    // Student: change the following directional light to a spotlight,
-    // color full white, intensity 1.5
-    // location -400, 1200, 300
-    // angle 20 degrees
-    // exponent 1
-    // target position 0, 200, 0
+    spotlight = new THREE.SpotLight(0xFFFFFF, 1.0);
+    spotlight.position.set(-400, 1200, 300);
+    spotlight.angle = 20 * Math.PI / 180;
+    spotlight.penumbra = 1;
 
-    var light = new THREE.SpotLight(0xFFFFFF, 1.5);
-    light.position.set(-400, 1200, 300);
-    light.angle = 20 * Math.PI / 180;
-    light.penumbra = 1;
-    scene.add(light);
+    spotlight.castShadow = true;
+    spotlight.shadow.mapSize.width = 1024;
+    spotlight.shadow.mapSize.height = 1024;
+    spotlight.shadow.camera.near = 500;
+    spotlight.shadow.camera.far = 4000;
+    spotlight.shadow.camera.fov = 30;
 
-    const lightTargetObject = new THREE.Object3D();
-    lightTargetObject.position.set(0, 200, 0);
-    scene.add(lightTargetObject);
-    light.target = lightTargetObject;
+    scene.add(spotlight);
 
+    const spotlighttTargetObject = new THREE.Object3D();
+    spotlighttTargetObject.position.set(0, 200, 0);
+    scene.add(spotlighttTargetObject);
+    spotlight.target = spotlighttTargetObject;
+
+    var lightSphere = new THREE.Mesh(
+        new THREE.SphereGeometry(10, 12, 6),
+        new THREE.MeshBasicMaterial());
+    lightSphere.position.copy(spotlight.position);
+
+    scene.add(lightSphere);
+
+    // GROUND
+    // put grid lines every 10000/100 = 100 units
     var solidGround = new THREE.Mesh(
         new THREE.PlaneGeometry(10000, 10000),
         new THREE.MeshPhongMaterial({
@@ -56,6 +87,7 @@ function fillScene()
             polygonOffset: true, polygonOffsetFactor: 1.0, polygonOffsetUnits: 4.0
         }));
     solidGround.rotation.x = -Math.PI / 2;
+    solidGround.receiveShadow = true;
 
     scene.add(solidGround);
 
@@ -63,6 +95,7 @@ function fillScene()
     // Bird
     var bird = new THREE.Object3D();
     createDrinkingBird(bird);
+
     scene.add(bird);
 }
 
@@ -79,53 +112,53 @@ function createSupport(bsupport)
     // base
     cube = new THREE.Mesh(
         new THREE.RoundedBoxGeometry(20 + 64 + 110, 4, 2 * 77 + 12, bevelRadius), footMaterial);
-    cube.position.x = -45;                  // (20+32) - half of width (20+64+110)/2
-    cube.position.y = 4 / 2;                // half of height
-    cube.position.z = 0;                    // centered at origin
+    cube.position.x = -45;              // (20+32) - half of width (20+64+110)/2
+    cube.position.y = 4 / 2;            // half of height
+    cube.position.z = 0;                // centered at origin
     bsupport.add(cube);
 
     // feet
     cube = new THREE.Mesh(
         new THREE.RoundedBoxGeometry(20 + 64 + 110, 52, 6, bevelRadius), footMaterial);
-    cube.position.x = -45;                  // (20+32) - half of width (20+64+110)/2
-    cube.position.y = 52 / 2;               // half of height
-    cube.position.z = 77 + 6 / 2;           // offset 77 + half of depth 6/2
+    cube.position.x = -45;              // (20+32) - half of width (20+64+110)/2
+    cube.position.y = 52 / 2;           // half of height
+    cube.position.z = 77 + 6 / 2;       // offset 77 + half of depth 6/2
     bsupport.add(cube);
 
     cube = new THREE.Mesh(
         new THREE.RoundedBoxGeometry(20 + 64 + 110, 52, 6, bevelRadius), footMaterial);
-    cube.position.x = -45;                  // (20+32) - half of width (20+64+110)/2
-    cube.position.y = 52 / 2;               // half of height
-    cube.position.z = -(77 + 6 / 2);        // negative offset 77 + half of depth 6/2
+    cube.position.x = -45;              // (20+32) - half of width (20+64+110)/2
+    cube.position.y = 52 / 2;           // half of height
+    cube.position.z = -(77 + 6 / 2);    // negative offset 77 + half of depth 6/2
     bsupport.add(cube);
 
     cube = new THREE.Mesh(
         new THREE.RoundedBoxGeometry(64, 104, 6, bevelRadius), footMaterial);
-    cube.position.x = 0;                    // centered on origin along X
+    cube.position.x = 0;                // centered on origin along X
     cube.position.y = 104 / 2;
-    cube.position.z = 77 + 6 / 2;           // negative offset 77 + half of depth 6/2
+    cube.position.z = 77 + 6 / 2;       // negative offset 77 + half of depth 6/2
     bsupport.add(cube);
 
     cube = new THREE.Mesh(
         new THREE.RoundedBoxGeometry(64, 104, 6, bevelRadius), footMaterial);
-    cube.position.x = 0;                    // centered on origin along X
+    cube.position.x = 0;                // centered on origin along X
     cube.position.y = 104 / 2;
-    cube.position.z = -(77 + 6 / 2);        // negative offset 77 + half of depth 6/2
+    cube.position.z = -(77 + 6 / 2);    // negative offset 77 + half of depth 6/2
     bsupport.add(cube);
 
     // legs
     cube = new THREE.Mesh(
         new THREE.RoundedBoxGeometry(60, 282 + 4, 4, bevelRadius), legMaterial);
-    cube.position.x = 0;                    // centered on origin along X
+    cube.position.x = 0;                // centered on origin along X
     cube.position.y = 104 + 282 / 2 - 2;
-    cube.position.z = 77 + 6 / 2;           // negative offset 77 + half of depth 6/2
+    cube.position.z = 77 + 6 / 2;       // negative offset 77 + half of depth 6/2
     bsupport.add(cube);
 
     cube = new THREE.Mesh(
         new THREE.RoundedBoxGeometry(60, 282 + 4, 4, bevelRadius), legMaterial);
-    cube.position.x = 0;                    // centered on origin along X
+    cube.position.x = 0;                // centered on origin along X
     cube.position.y = 104 + 282 / 2 - 2;
-    cube.position.z = -(77 + 6 / 2);        // negative offset 77 + half of depth 6/2
+    cube.position.z = -(77 + 6 / 2);    // negative offset 77 + half of depth 6/2
     bsupport.add(cube);
 }
 
@@ -270,32 +303,32 @@ function createDrinkingBird(bbird)
     bbird.add(support);
     bbird.add(body);
     bbird.add(head);
+
+    // go through all objects and set the meshes (only)
+    // so that they cast shadows
+    bbird.traverse(function (object)
+    {
+        if (object instanceof THREE.Mesh)
+        {
+            object.castShadow = true;
+            object.receiveShadow = true;
+        }
+    });
 }
 
-function init()
+function setupGui()
 {
-    var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight - 50;
-    var canvasRatio = canvasWidth / canvasHeight;
+    effectController = {
+        shadowBias: 0.00001  // hack to make dat.GUI show decimal places
+    };
 
-    // RENDERER
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(canvasWidth, canvasHeight);
-    renderer.setClearColor(new THREE.Color(0x0), 1.0);
-    renderer.outputEncoding = THREE.sRGBEncoding;
-
-    // CAMERA
-    camera = new THREE.PerspectiveCamera(35, canvasRatio, 1, 4000);
-    camera.position.set(-1160, 350, -600);
-
-    // CONTROLS
-    cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
-    cameraControls.target.set(0, 310, 0);
+    var gui = new dat.GUI();
+    gui.add(effectController, "shadowBias", -0.01, 0.01).name("shadow bias");
+    gui.close();
 }
 
 function drawHelpers()
 {
-    //Coordinates.drawGround({size:10000});
     Coordinates.drawGrid({ size: 10000, scale: 0.01 });
 }
 
@@ -309,6 +342,7 @@ function addToDOM()
     }
     container.appendChild(renderer.domElement);
 }
+
 function animate()
 {
     window.requestAnimationFrame(animate);
@@ -321,6 +355,7 @@ function render()
     cameraControls.update(delta);
 
     headlight.position.copy(camera.position);
+    spotlight.shadow.bias = effectController.shadowBias;
     renderer.render(scene, camera);
 }
 
@@ -328,6 +363,7 @@ try
 {
     init();
     fillScene();
+    setupGui();
     drawHelpers();
     addToDOM();
     animate();
