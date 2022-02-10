@@ -134,18 +134,35 @@ project "Other"
 
     files
     {
-        ".editorconfig",
         ".gitignore",
-        "commit_now.ps1",
+        ".editorconfig",
         "conanfile.txt",
+        "commit_now.ps1",
+        "conan_init.ps1",
+        "conan_debug/conanbuildinfo.premake.lua",
+        "conan_release/conanbuildinfo.premake.lua",
+        "conan_relwithdebinfo/conanbuildinfo.premake.lua",
         "gen_solution.bat",
         "premake5.lua"
     }
 
     vpaths
     {
-        ["Build/*"] = { "**.lua", "**.bat", "conanfile.txt", "conanbuildinfo.premake.lua" },
-        ["Git/*"]   = { ".gitignore", "commit_now.ps1", ".editorconfig" }
+        ["Build/*"] = {
+            "**.lua",
+            "**.bat",
+            "conan_init.ps1",
+            "conanfile.txt",
+            "conanbuildinfo.premake.lua",
+            "conan_debug/conanbuildinfo.premake.lua",
+            "conan_release/conanbuildinfo.premake.lua",
+            "conan_relwithdebinfo/conanbuildinfo.premake.lua"
+        },
+        ["Git/*"]   = {
+            ".gitignore",
+            "commit_now.ps1",
+            ".editorconfig"
+        }
     }
 
     filter ({})
