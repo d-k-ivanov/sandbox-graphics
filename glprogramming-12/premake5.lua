@@ -22,13 +22,39 @@ premake.override(premake.vstudio.sln2005, "projects", function(base, wks)
     base(wks)
 end)
 
-include("conanbuildinfo.premake.lua")
+local function include_conan(filename)
+    include(filename)
+    local buildinfo = { }
+    local prefix = 'conan_'
+    for k, v in pairs(_G) do
+        if k:sub(1, #prefix) == prefix then
+            buildinfo[k:sub(#prefix + 1)] = v
+        end
+    end
+    return buildinfo
+end
+
+local function conan_setup(include_conan)
+    includedirs { include_conan.includedirs }
+    libdirs     { include_conan.libdirs }
+    links       { include_conan.libs }
+    links       { include_conan.system_libs }
+    links       { include_conan.frameworks }
+    defines     { include_conan.defines }
+    bindirs     { include_conan.bindirs }
+end
+
+conan_debug          = include_conan "conan_debug/conanbuildinfo.premake.lua"
+conan_release        = include_conan "conan_release/conanbuildinfo.premake.lua"
+conan_relwithdebinfo = include_conan "conan_relwithdebinfo/conanbuildinfo.premake.lua"
+
+-- include("conanbuildinfo.premake.lua")
 
 workspace "OpenGL"
-    conan_basic_setup()
+    -- conan_basic_setup()
     startproject "BezierCurve"
 
-    configurations { "RelDebug", "Release", "Debug" }
+    configurations { "RelWithDebInfo", "Release", "Debug" }
     platforms { "x64", "x86"}
     warnings "Extra"
 
@@ -54,11 +80,13 @@ workspace "OpenGL"
     filter({"platforms:x86_64","system:windows"})
         defines({"COMPILER_MSVC64","WIN64"})
 
-    filter "configurations:RelDebug"
+    filter "configurations:RelWithDebInfo"
         defines {"NDEBUG", "RELEASE", "_RELEASE"}
         optimize "Debug"
         runtime "Release"
         symbols "On"
+        conan_setup(conan_relwithdebinfo)
+        -- libdirs { conan_relwithdebinfo.libdirs }
 
     filter "configurations:Release"
         defines {"NDEBUG", "RELEASE", "_RELEASE"}
@@ -66,12 +94,16 @@ workspace "OpenGL"
         optimize "Full"
         runtime "Release"
         symbols "Off"
+        conan_setup(conan_release)
+        -- libdirs { conan_release.libdirs }
 
     filter "configurations:Debug"
         defines {"DEBUG", "_DEBUG"}
         optimize "Off"
         runtime "Debug"
         symbols "On"
+        conan_setup(conan_debug)
+        -- libdirs { conan_debug.libdirs }
 
     filter "system:windows"
         cdialect "C17"
@@ -99,7 +131,6 @@ include "BezierCurve"
 
 project "Other"
     kind "None"
-
 
     files
     {

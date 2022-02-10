@@ -10,14 +10,17 @@
 **.vcxproj.user
 
 # Conan files
-venv
 .conan
+**/conan_debug/
+**/conan_release/
+**/conan_relwithdebinfo/
 conan.lock
-conanbuildinfo.txt
 conanbuildinfo.premake.lua
+conanbuildinfo.txt
 conaninfo.txt
-graphinfo
 graph_info.json
+graphinfo
+venv
 
 # Misc
 tmp/
