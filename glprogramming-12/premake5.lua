@@ -58,7 +58,7 @@ workspace "OpenGL"
     platforms { "x64", "x86"}
     warnings "Extra"
 
-    flags {"FatalWarnings" ,"MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers"}
+    flags {"MultiProcessorCompile", "ShadowedVariables", "UndefinedIdentifiers"}
 
     targetdir ("bin/%{prj.name}/%{cfg.buildcfg}-%{cfg.architecture}")
     debugdir ("bin/%{prj.name}/%{cfg.buildcfg}-%{cfg.architecture}")
@@ -128,6 +128,8 @@ workspace "OpenGL"
     filter({})
 
 include "BezierCurve"
+include "BezierSurface"
+include "NURBSSurface"
 
 project "Other"
     kind "None"

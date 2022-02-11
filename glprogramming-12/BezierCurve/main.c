@@ -9,9 +9,9 @@
 
 GLfloat ctrlpoints[4][3] = {
     {-4.0f, -4.0f, 0.0f},
-    {-2.0f,  4.0f, 0.0f},
-    { 2.0f, -4.0f, 0.0f},
-    { 4.0f,  4.0f, 0.0f}
+    {-2.0f, 4.0f, 0.0f},
+    {2.0f, -4.0f, 0.0f},
+    {4.0f, 4.0f, 0.0f}
 };
 
 void init(void)
@@ -58,7 +58,7 @@ void reshape(const int w, const int h)
     glLoadIdentity();
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
