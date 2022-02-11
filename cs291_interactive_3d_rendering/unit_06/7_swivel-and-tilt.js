@@ -251,16 +251,34 @@ function render()
     cameraControls.update(delta);
 
     // Light control - Altitude
-    let xAlt = Math.cos(effectController.altitude * Math.PI / 180);
-    let y    = Math.sin(effectController.altitude * Math.PI / 180);
+    let altitude_rad = effectController.altitude * Math.PI / 180
+    // let altitude_x = Math.cos(altitude_rad);
+    // let altitude_y = Math.sin(altitude_rad);
+    // light.position.x = altitude_x;
+    // light.position.y = altitude_y;
 
     // Light control - Azimuth
-    let xAz = Math.cos(effectController.azimuth * Math.PI / 180);
-    let zAz   = Math.sin(effectController.azimuth * Math.PI / 180);
+    let azimuth_rad = effectController.azimuth * Math.PI / 180
+    // let azimuth_x = Math.cos(azimuth_rad);
+    // let azimuth_z = Math.sin(azimuth_rad);
+    // light.position.x = azimuth_x;
+    // light.position.z = azimuth_z;
 
-    var length = Math.sqrt(1 - y * y);
-    let x = length * xAz;
-    let z = length * zAz;
+    // var length = Math.sqrt(1 - altitude_y * altitude_y);
+    // let x = length * azimuth_x;
+    // let z = length * azimuth_z;
+
+    // Rectangular to spherical coordinates
+    // r = Math.sqert(x * x + y * y + z * z) = 1
+    // x = r * sinθ * cosφ
+    // y = r * sinθ * sinφ
+    // z = r * cosθ
+    // θ = 90 - altitude
+    // φ = 90 - azimuth
+
+    let x = -Math.cos(altitude_rad) * Math.cos(azimuth_rad);
+    let y = Math.sin(altitude_rad);
+    let z = Math.cos(altitude_rad) * Math.sin(azimuth_rad);
 
     light.position.x = x;
     light.position.y = y;
