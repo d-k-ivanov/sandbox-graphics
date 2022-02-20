@@ -68,6 +68,7 @@ function init()
     // renderer.gammaInput = true; // Texture.encoding
     // renderer.outputEncoding = true;
     addToDOM();
+
     // STATS
     stats = new Stats();
     stats.setMode(1);
