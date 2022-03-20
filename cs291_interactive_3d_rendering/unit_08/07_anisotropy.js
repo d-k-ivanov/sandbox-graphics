@@ -259,7 +259,7 @@ function setupGui()
     gui.add(effectController, "minification", ['nearest', 'linear', 'mipmap']).name("minification");
     var anisoCount = 1;
     var anisoList = [];
-    while (anisoCount <= renderer.getMaxAnisotropy())
+    while (anisoCount <= renderer.capabilities.getMaxAnisotropy())
     {
         anisoList.push(anisoCount);
         anisoCount *= 2;
