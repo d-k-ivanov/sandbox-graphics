@@ -109,7 +109,7 @@ function init()
     ]);
 
     // geometry.faces[0].vertexColors = [black, black, white, white];
-    geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3, true) );
+    geometry.setAttribute( 'color', new THREE.BufferAttribute( colors, 3, true) );
     geometry.computeVertexNormals();
 
     gradient_ground = new THREE.Mesh(geometry, gradient_material);
