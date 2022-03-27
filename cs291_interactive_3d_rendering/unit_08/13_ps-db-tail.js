@@ -13,7 +13,6 @@ var cube, sphere, cylinder;
 function createTail()
 {
     // Student: add the tail texture here
-    // texture is located at /media/img/cs291/textures/feather.png
     const textureLoader = new THREE.TextureLoader();
     var texture = textureLoader.load('../textures/feather.png');
     var tail = new THREE.Mesh(
