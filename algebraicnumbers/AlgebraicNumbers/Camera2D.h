@@ -4,20 +4,20 @@
 
 class Camera2D
 {
-    glm::dvec2 pos;
-    double scale;
-    double aspect;
+    glm::dvec2 m_Pos;
+    double m_Scale;
+    double m_Aspect;
 public:
     Camera2D(double xpos = 0, double ypos = 0, double scale = 0, double aspect = 1);
-    glm::dmat4 getTransform() const;
-    glm::dmat4 getInvTransform() const;
-    glm::dmat4 getNDCTransform() const;
-    glm::dmat4 getInvNDCTransform() const;
-    double getAspect() const;
-    double getXPos() const;
-    double getYPos() const;
-    double getScale() const;
-    double getScaleAbsolute() const; //returns exp(-2.30258509*scale)
+    [[nodiscard]] glm::dmat4 getTransform() const;
+    [[nodiscard]] glm::dmat4 getInvTransform() const;
+    [[nodiscard]] glm::dmat4 getNDCTransform() const;
+    [[nodiscard]] glm::dmat4 getInvNDCTransform() const;
+    [[nodiscard]] double getAspect() const;
+    [[nodiscard]] double getXPos() const;
+    [[nodiscard]] double getYPos() const;
+    [[nodiscard]] double getScale() const;
+    [[nodiscard]] double getScaleAbsolute() const; //returns exp(-2.30258509*scale)
 
     void setXPos(double arg);
     void setYPos(double arg);

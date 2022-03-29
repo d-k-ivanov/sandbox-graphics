@@ -4,10 +4,9 @@
 #include <iostream>
 #include <vector>
 
-#include "SDL.h"
-#include "SDL_opengl.h"
-
-using namespace std;
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <GL/glu.h>
 
 bool sRunning;
 int mouseposx;
@@ -74,7 +73,7 @@ int main(int argc, char** argv)
 {
     sInit();
     int list = 0;
-    vector<Point> p = precalc(14);
+    std::vector<Point> p = precalc(14);
     GLuint tex = othertex(256);
 
     while (sLoop())
@@ -149,13 +148,13 @@ void sInit()
     cam = CameraController(0, 0, 0, 1280.0 / 800);
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        cerr << "Video initialization failed: " << SDL_GetError() << endl;
+        std::cerr << "Video initialization failed: " << SDL_GetError() << std::endl;
     }
 
     const SDL_VideoInfo* videoInfo = SDL_GetVideoInfo();
     if (!videoInfo)
     {
-        cerr << "Video query failed: " << SDL_GetError() << endl;
+        std::cerr << "Video query failed: " << SDL_GetError() << std::endl;
     }
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -169,9 +168,9 @@ void sInit()
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
     if (!SDL_SetVideoMode(1280, 800, 32, SDL_OPENGL))
     {
-        cerr << "Video mode set failed: " << SDL_GetError() << endl;
+        std::cerr << "Video mode set failed: " << SDL_GetError() << std::endl;
     }
-    cerr << "HI!" << endl;
+    std::cerr << "HI!" << std::endl;
 }
 
 void sHandleEvents()

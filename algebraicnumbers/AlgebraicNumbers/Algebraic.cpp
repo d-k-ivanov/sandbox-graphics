@@ -3,20 +3,18 @@
 
 #include <iostream>
 #include <vector>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <SDL.h>
-
-using namespace std;
 
 char nonconvergent; // int fq[5001];
 
 double frnd()
 {
-    return ((double)rand()) / RAND_MAX;
+    return static_cast<double>(rand()) / RAND_MAX;
 }
 
-double frnd(double arg)
+double frnd(const double arg)
 {
     return frnd() * arg;
 }
@@ -27,30 +25,33 @@ double frnd(double arg)
  * o is the order of the polynomial c. (so there are o+1 elements of c)
  * pr is a pointer to a vector of roots of the polynomial.
  */
-void findroots_inner(Complex* c, const unsigned o, vector<Complex>* pr)
+void findroots_inner(Complex* c, const unsigned o, std::vector<Complex>* pr)
 {
-    Complex r; //root
-    /*for(int n=0;n<=o;n++)
-{
-    cout<<c[n]<<" ";
-}*/
-    //cout<<endl;
+    Complex r; // root
+    /*
+     * for(int n = 0; n <= o; n++)
+     * {
+     *     std::cout << c[n] << " ";
+     * }
+     * std::cout << std::endl;
+     */
+
     if (o == 1)
     {
-        //base case : the equation c[0]+c[1]*z=0 can be solved easily.
+        // base case : the equation c[0]+c[1]*z=0 can be solved easily.
         r = Complex() - c[0] / c[1];
         pr->push_back(r);
         return;
     }
 
 
-    //Pick a random complex number, then calculate r -> r-f(r)/f'(r). If the difference between the old root and
-    //the new root is small enough, exit. If j reaches a certain number, we pick a new root and start over. If
-    //we've picked a bunch of new roots and still haven't converged, then exit (counted by i).
-    //f=function = c[0]+c[1]*r+c[2]*r^2+...+c[o]*r^o
-    //d=derivative=c[1]+2*c[2]*r+3*c[3]*r^2+...+o*c[o]*r^(o-1)
-    //p is the power, multiplied by r each for loop. (1,r,r^2,r^3 etc)
-    //ors is the old root.
+    // Pick a random complex number, then calculate r -> r-f(r)/f'(r). If the difference between the old root and
+    // the new root is small enough, exit. If j reaches a certain number, we pick a new root and start over. If
+    // we've picked a bunch of new roots and still haven't converged, then exit (counted by i).
+    // f=function = c[0]+c[1]*r+c[2]*r^2+...+c[o]*r^o
+    // d=derivative=c[1]+2*c[2]*r+3*c[3]*r^2+...+o*c[o]*r^(o-1)
+    // p is the power, multiplied by r each for loop. (1,r,r^2,r^3 etc)
+    // ors is the old root.
 
     Complex f, d, p, ors;
     int i = 0, j = 500;
@@ -78,46 +79,57 @@ void findroots_inner(Complex* c, const unsigned o, vector<Complex>* pr)
             d += p * c[n + 1] * (n + 1);
         }
         f += p * c[o];
-        /*if(i<15){
-        SDL_Delay(100);
-    cout<<r<<" "<<f<<" "<<d<<" "<<(r-f/d)<<endl;}*/
+        /*
+         * if(i<15)
+         * {
+         *      SDL_Delay(100);
+         *      std::cout << r << " " << f << " " << d << " " << (r - f / d) << std::endl;
+         * }
+         */
+
         r -= f / d;
-        //cout<<r<<endl;
+        // std::cout << r << std::endl;
         if (i == 4999)
-            cout << (r - ors).length2() << endl;
+            std::cout << (r - ors).length2() << std::endl;
     }
     while ((r - ors).length2() > 1e-4);
-    //cout<<(int)nonconvergent<<" A "<<r<<endl;
-    cout << i << " " << (int)nonconvergent << endl;
-    //fq[i]++;
-    pr->push_back(r); //add the root
+    // std::cout << static_cast<int>(nonconvergent) << " A " << r << std::endl;
+    std::cout << i << " " << static_cast<int>(nonconvergent) << std::endl;
+    // fq[i]++;
+    pr->push_back(r); // add the root
 
-    //this method divides the polynomial by the root r through synthetic division
-    for (int n = o; n > 0; n--) c[n - 1] += r * c[n];
-    for (int n = 0; n < o; n++) c[n] = c[n + 1];
+    //vthis method divides the polynomial by the root r through synthetic division
+    for (int n = o; n > 0; n--)
+        c[n - 1] += r * c[n];
 
-    //we've calculated c=(z-r)*c'. (where c' is the divided polynomial). Now we can call the function again until we have
-    //c=(z-r1)(z-r2)...(z-ro).
+    for (int n = 0; n < o; n++)
+        c[n] = c[n + 1];
+
+    // we've calculated c=(z-r)*c'. (where c' is the divided polynomial).
+    // Now we can call the function again until we have
+    // c=(z-r1)(z-r2)...(z-ro).
     findroots_inner(c, o - 1, pr);
 }
 
 // c[0] to c[o] are coeffs of 1 to x^o;
-vector<Complex> findroots(Complex* c, const unsigned o)
+std::vector<Complex> findroots(Complex* c, const unsigned o)
 {
-    vector<Complex> r = vector<Complex>();
+    std::vector<Complex> r = std::vector<Complex>();
     findroots_inner(c, o, &r);
     return r;
 }
 
 
-//This method finds all the points to plot.
-//The majority of the code is for generating polynomials. You want polynomial
-vector<Point> precalc(const int maxh)
+// This method finds all the points to plot.
+// The majority of the code is for generating polynomials. You want polynomial
+std::vector<Point> precalc(const int maxh)
 {
-    vector<Point> ret = vector<Point>();
+    std::vector<Point> ret = std::vector<Point>();
     Point p;
     int h, i, j, k, nz, l, sp;
-    //for (i=0;i<=5000;i++) fq[i]=0;
+    // for (i = 0; i <= 5000; i++)
+    //     fq[i]=0;
+
     int temps = 0, eqns = 0, roots = 0;
     for (h = 2; h <= maxh; h++) // Complexity measure sum(|c_n|+1)
     {
@@ -136,7 +148,7 @@ vector<Point> precalc(const int maxh)
             temps++;
             if (k == 0) continue; // k is the order
             p.o = k;
-            //p.o=t[k];
+            // p.o=t[k];
             nz = 0;
             for (j = k; j >= 0; j--) if (t[j] != 0) nz++;
             for (j = (1 << (nz - 1)) - 1; j >= 0; j--) // Signs loop
@@ -152,9 +164,9 @@ vector<Point> precalc(const int maxh)
                     }
                 eqns++;
                 nonconvergent = 0;
-                //Complex *cc=new Complex[k+1];
-                //memcpy(cc,c,(k+1)*sizeof(Complex));
-                vector<Complex> retroots = findroots(c, k);
+                // Complex *cc=new Complex[k+1];
+                // memcpy(cc, c, (k+1) * sizeof(Complex));
+                std::vector<Complex> retroots = findroots(c, k);
                 if (!nonconvergent)
                     for (l = k - 1; l >= 0; l--)
                     {
@@ -165,21 +177,23 @@ vector<Point> precalc(const int maxh)
                     }
                 else
                 {
-                    //FILE *out=fopen("nonconv.log","at");
-                    //for (l=k;l>=0;l--) fprintf(out,"%+lg*z^%d%s",cc[l].re,l,(l?"":"\n"));
-                    //fclose(out);
+                    // FILE *out = fopen("nonconv.log","at");
+                    // for(l = k; l >= 0; l--)
+                    //     fprintf(out, "%+lg*z^%d%s", cc[l].re, l, (l?"":"\n"));
+                    // fclose(out);
                 }
                 delete[] c;
-                //delete[] cc;
+                // delete[] cc;
             }
         }
         delete[] t;
     }
-    //FILE *out=fopen("stats.txt","at");
-    //fprintf(out,"temps=%d eqns=%d roots=%d\n",temps,eqns,roots);
-    //fclose(out);
-    //out=fopen("histoiters.csv","wt");
-    //for (i=0;i<=5000;i++) fprintf(out,"%d,%d\n",i,fq[i]);
-    //fclose(out);
+    // FILE *out = fopen("stats.txt", "at");
+    // fprintf(out, "temps=%d eqns=%d roots=%d\n", temps, eqns, roots);
+    // fclose(out);
+    // out=fopen("histoiters.csv","wt");
+    // for (i = 0; i <= 5000; i++)
+    //     fprintf(out, "%d,%d\n", i, fq[i]);
+    // fclose(out);
     return ret;
 }

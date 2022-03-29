@@ -6,26 +6,26 @@
 
 class CameraController
 {
-    Camera2D cam;
+    Camera2D m_Cam;
 
-    double veldrag;
-    glm::dvec2 vel;
+    double m_VelDrag;
+    glm::dvec2 m_Vel{};
 
-    bool isDragging;
-    glm::dvec2 dragstart; //NDC on (-1,1)
-    glm::dvec2 dragcurr;
-    glm::dvec2 mousezoompos;
+    bool m_IsDragging;
+    glm::dvec2 m_DragStart{}; //NDC on (-1,1)
+    glm::dvec2 m_DragCurr{};
+    glm::dvec2 m_MouseZoomPos{};
 
-    double scrolldrag;
-    double scrollvel;
+    double m_ScrollDrag;
+    double m_ScrollVel;
 public:
     CameraController(double xpos = 0, double ypos = 0, double scale = 0, double aspect = 1);
     void update(double timestep);
     void drag(double x, double y);
     void enddrag();
-    void mouseZoom(double arg);
+    void mouseZoom(double amount);
     void setMouseZoomPos(double x, double y);
 
     void applyCameraTransform() const;
-    Camera2D getCam() const;
+    [[nodiscard]] Camera2D getCam() const;
 };

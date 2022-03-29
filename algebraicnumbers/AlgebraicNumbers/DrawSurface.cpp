@@ -3,19 +3,19 @@
 
 #include <cstddef>
 
+#include <SDL.h>
 #include <SDL_stdinc.h>
 #include <SDL_surface.h>
 
-DrawSurface::DrawSurface() : surface(NULL), dealloc(false)
+DrawSurface::DrawSurface() : m_Surface(nullptr), m_Dealloc(false)
 {
 }
 
-DrawSurface::DrawSurface(const char* file) : surface(NULL), dealloc(true)
+DrawSurface::DrawSurface(const char* file) : m_Surface(load_image(file)), m_Dealloc(true)
 {
-    surface = load_image(file);
 }
 
-DrawSurface::DrawSurface(int xsize, int ysize) : surface(NULL), dealloc(true)
+DrawSurface::DrawSurface(const int xsize, const int ysize) : m_Surface(nullptr), m_Dealloc(true)
 {
     Uint32 rmask, gmask, bmask, amask;
     #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -24,20 +24,19 @@ DrawSurface::DrawSurface(int xsize, int ysize) : surface(NULL), dealloc(true)
     bmask = 0x0000ff00;
     amask = 0x000000ff;
     #else
-        rmask = 0x00ff0000;
-        gmask = 0x0000ff00;
-        bmask = 0x000000ff;
-        amask = 0xff000000;
+    rmask = 0x00ff0000;
+    gmask = 0x0000ff00;
+    bmask = 0x000000ff;
+    amask = 0xff000000;
     #endif
-    surface = SDL_CreateRGBSurface(SDL_SWSURFACE, xsize, ysize, 32, rmask, gmask, bmask, amask);
-    dealloc = true;
+    m_Surface = SDL_CreateRGBSurface(SDL_SWSURFACE, xsize, ysize, 32, rmask, gmask, bmask, amask);
 }
 
-DrawSurface::DrawSurface(SDL_Surface* surfacecpy, bool dealloc) : surface(surfacecpy), dealloc(dealloc)
+DrawSurface::DrawSurface(SDL_Surface* surfaceptr, const bool dealloc) : m_Surface(surfaceptr), m_Dealloc(dealloc)
 {
 }
 
-DrawSurface::DrawSurface(const DrawSurface& r) : surface(NULL), dealloc(true)
+DrawSurface::DrawSurface(const DrawSurface& r) : m_Surface(nullptr), m_Dealloc(true)
 {
     assign(r);
 }
@@ -50,10 +49,10 @@ DrawSurface& DrawSurface::operator=(const DrawSurface& r)
 
 DrawSurface& DrawSurface::assign(const DrawSurface& r)
 {
-    //if(r.dealloc)
+    // if(r.dealloc)
     assignAsCopyOf(r);
-    //else
-    //assignAsReferenceTo(r);
+    // else
+    // assignAsReferenceTo(r);
     return *this;
 }
 
@@ -61,11 +60,11 @@ DrawSurface& DrawSurface::assignAsReferenceTo(const DrawSurface& r)
 {
     if (this != (&r))
     {
-        if (dealloc && (surface != NULL))
-            SDL_FreeSurface(surface);
-        surface = NULL;
-        surface = r.surface;
-        dealloc = false;
+        if (m_Dealloc && (m_Surface != nullptr))
+            SDL_FreeSurface(m_Surface);
+
+        m_Surface = r.m_Surface;
+        m_Dealloc = false;
     }
     return *this;
 }
@@ -74,113 +73,146 @@ DrawSurface& DrawSurface::assignAsCopyOf(const DrawSurface& r)
 {
     if (this != (&r))
     {
-        if (dealloc && (surface != NULL))
-            SDL_FreeSurface(surface);
-        surface = NULL;
-        surface = r.copyOf();
-        if (surface == NULL)
-            dealloc = false;
+        if (m_Dealloc && (m_Surface != nullptr))
+            SDL_FreeSurface(m_Surface);
+
+        m_Surface = r.copyOf();
+
+        if (m_Surface == nullptr)
+            m_Dealloc = false;
         else
-            dealloc = true;
+            m_Dealloc = true;
     }
+
     return *this;
 }
 
 DrawSurface::~DrawSurface()
 {
-    if (dealloc && (surface != NULL))
+    if (m_Dealloc && (m_Surface != nullptr))
     {
-        SDL_FreeSurface(surface);
+        SDL_FreeSurface(m_Surface);
     }
 }
 
-
-Uint32 DrawSurface::getFlags() const { return surface->flags; }
-const SDL_PixelFormat* DrawSurface::getFormat() const { return surface->format; }
-int DrawSurface::getWidth() const { return surface->w; }
-int DrawSurface::getHeight() const { return surface->h; }
-Uint16 DrawSurface::getPitch() const { return surface->pitch; }
-const Uint32* DrawSurface::getPixels() const { return (Uint32*)surface->pixels; }
-const SDL_Surface* DrawSurface::constGetSurface() const { return surface; }
-//SDL_Surface* DrawSurface::getSurface(){return surface;}
-Uint32 DrawSurface::pickCol(int x, int y) const
+Uint32 DrawSurface::getFlags() const
 {
-    return get_dot(surface, x, y);
+    return m_Surface->flags;
 }
 
-void DrawSurface::clear()
+const SDL_PixelFormat* DrawSurface::getFormat() const
+{
+    return m_Surface->format;
+}
+
+int DrawSurface::getWidth() const
+{
+    return m_Surface->w;
+}
+
+int DrawSurface::getHeight() const
+{
+    return m_Surface->h;
+}
+
+Uint16 DrawSurface::getPitch() const
+{
+    return static_cast<Uint16>(m_Surface->pitch);
+}
+
+const Uint32* DrawSurface::getPixels() const
+{
+    return static_cast<Uint32*>(m_Surface->pixels);
+}
+
+const SDL_Surface* DrawSurface::constGetSurface() const
+{
+    return m_Surface;
+}
+
+//SDL_Surface* DrawSurface::getSurface(){return surface;}
+
+Uint32 DrawSurface::pickCol(int x, int y) const
+{
+    return get_dot(m_Surface, x, y);
+}
+
+void DrawSurface::clear() const
 {
     clearCol(0x00FFFFFF);
 }
 
-void DrawSurface::clearCol(Uint32 color)
+void DrawSurface::clearCol(const Uint32 color) const
 {
     for (int x = 0; x < getWidth(); x++)
         for (int y = 0; y < getHeight(); y++)
-            dot(surface, x, y, color);
+            dot(m_Surface, x, y, color);
 }
 
-void DrawSurface::drawDot(int x, int y, Uint32 color)
+void DrawSurface::drawDot(int x, int y, Uint32 color) const
 {
-    dot(surface, x, y, color);
+    dot(m_Surface, x, y, color);
 }
 
-void DrawSurface::flipSurface() { SDL_Flip(surface); }
-
-void DrawSurface::drawLine(int x1, int y1, int x2, int y2, Uint32 color)
+void DrawSurface::flipSurface()
 {
-    bline(surface, x1, y1, x2, y2, color);
+    SDL_Flip(m_Surface);
 }
 
-void DrawSurface::drawWuLine(int x1, int y1, int x2, int y2, Uint32 color)
+void DrawSurface::drawLine(const int x1, const int y1, const int x2, const int y2, const Uint32 color) const
 {
-    wuline(surface, x1, y1, x2, y2, color);
+    bline(m_Surface, x1, y1, x2, y2, color);
 }
 
-void DrawSurface::drawCircle(int cx, int cy, int r, Uint32 color)
+void DrawSurface::drawWuLine(const int x1, const int y1, const int x2, const int y2, const Uint32 color) const
 {
-    rasterCircle(surface, cx, cy, r, color);
+    wuline(m_Surface, x1, y1, x2, y2, color);
 }
 
-void DrawSurface::drawWuCircle(int cx, int cy, int r, Uint32 color)
+void DrawSurface::drawCircle(const int cx, const int cy, const int r, const Uint32 color) const
 {
-    wuCircle(surface, cx, cy, r, color);
+    rasterCircle(m_Surface, cx, cy, r, color);
 }
 
-void DrawSurface::applyWuCircle(int cx, int cy, int r, Uint32 color)
+void DrawSurface::drawWuCircle(const int cx, const int cy, const int r, const Uint32 color) const
 {
-    DrawSurface mysurface = DrawSurface(getWidth(), getHeight());
+    wuCircle(m_Surface, cx, cy, r, color);
+}
+
+void DrawSurface::applyWuCircle(const int cx, const int cy, const int r, const Uint32 color) const
+{
+    const DrawSurface mysurface = DrawSurface(getWidth(), getHeight());
     mysurface.clear();
     mysurface.drawWuCircle(cx, cy, r, color);
-    mysurface.applyTo(surface);
+    mysurface.applyTo(m_Surface);
 }
 
-void DrawSurface::applyWuLine(int x1, int y1, int x2, int y2, Uint32 color)
+void DrawSurface::applyWuLine(const int x1, const int y1, const int x2, const int y2, const Uint32 color) const
 {
-    DrawSurface mysurface = DrawSurface(getWidth(), getHeight());
+    const DrawSurface mysurface = DrawSurface(getWidth(), getHeight());
     mysurface.clear();
     mysurface.drawWuLine(x1, y1, x2, y2, color);
-    mysurface.applyTo(surface);
+    mysurface.applyTo(m_Surface);
 }
 
-void DrawSurface::batchApplyWuLine(int numLines, int* lineData, Uint32 color)
+void DrawSurface::batchApplyWuLine(const int numLines, const int* lineData, const Uint32 color)
 {
-    DrawSurface mysurface = DrawSurface(getWidth(), getHeight());
+    const DrawSurface mysurface = DrawSurface(getWidth(), getHeight());
     mysurface.clear();
     for (int n = 0; n < numLines; n++)
     {
-        int x1 = lineData[n * 4];
-        int y1 = lineData[n * 4 + 1];
-        int x2 = lineData[n * 4 + 2];
-        int y2 = lineData[n * 4 + 3];
+        const int x1 = lineData[n * 4];
+        const int y1 = lineData[n * 4 + 1];
+        const int x2 = lineData[n * 4 + 2];
+        const int y2 = lineData[n * 4 + 3];
         mysurface.drawWuLine(x1, y1, x2, y2, color);
     }
     mysurface.applyTo(this);
 }
 
-void DrawSurface::batchApplyContigWuLine(int numLines, int* lineData, Uint32 color)
+void DrawSurface::batchApplyContigWuLine(const int numLines, const int* lineData, const Uint32 color)
 {
-    DrawSurface mysurface = DrawSurface(getWidth(), getHeight());
+    const DrawSurface mysurface = DrawSurface(getWidth(), getHeight());
     mysurface.clear();
     int lastx = lineData[0];
     int lasty = lineData[1];
@@ -197,10 +229,10 @@ void DrawSurface::batchApplyContigWuLine(int numLines, int* lineData, Uint32 col
 
 SDL_Surface* DrawSurface::copyOf() const
 {
-    if (surface != NULL)
+    if (m_Surface != nullptr)
     {
-        int xsize = getWidth();
-        int ysize = getHeight();
+        const int xsize = getWidth();
+        const int ysize = getHeight();
         Uint32 rmask, gmask, bmask, amask;
         #if SDL_BYTEORDER == SDL_BIG_ENDIAN
         rmask = 0xff000000;
@@ -208,10 +240,10 @@ SDL_Surface* DrawSurface::copyOf() const
         bmask = 0x0000ff00;
         amask = 0x000000ff;
         #else
-            rmask = 0x00ff0000;
-            gmask = 0x0000ff00;
-            bmask = 0x000000ff;
-            amask = 0xff000000;
+        rmask = 0x00ff0000;
+        gmask = 0x0000ff00;
+        bmask = 0x000000ff;
+        amask = 0xff000000;
         #endif
         SDL_Surface* tempsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, xsize, ysize, 32, rmask, gmask, bmask, amask);
         for (int x = 0; x < xsize; x++)
@@ -222,26 +254,26 @@ SDL_Surface* DrawSurface::copyOf() const
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 }
 
-void DrawSurface::applyTo(DrawSurface* surfaceto, int x, int y) const
+void DrawSurface::applyTo(DrawSurface* surfaceto, const int x, const int y) const
 {
-    surfaceto->applyFrom(surface, x, y);
+    surfaceto->applyFrom(m_Surface, x, y);
 }
 
-void DrawSurface::applyTo(SDL_Surface* surfaceto, int x, int y) const
+void DrawSurface::applyTo(SDL_Surface* surfaceto, const int x, const int y) const
 {
-    apply_surface(x, y, surface, surfaceto);
+    apply_surface(x, y, m_Surface, surfaceto);
 }
 
-void DrawSurface::applyFrom(const DrawSurface* surfacefrom, int x, int y)
+void DrawSurface::applyFrom(const DrawSurface* surfacefrom, const int x, const int y) const
 {
-    surfacefrom->applyTo(surface, x, y);
+    surfacefrom->applyTo(m_Surface, x, y);
 }
 
-void DrawSurface::applyFrom(const SDL_Surface* surfacefrom, int x, int y)
+void DrawSurface::applyFrom(const SDL_Surface* surfacefrom, const int x, const int y) const
 {
-    apply_surface(x, y, surfacefrom, surface);
+    apply_surface(x, y, surfacefrom, m_Surface);
 }

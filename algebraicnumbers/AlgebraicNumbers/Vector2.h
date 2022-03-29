@@ -20,9 +20,9 @@ public:
     float operator*(const Vector2& b) const; //dot product
     void normalize();
     void normalize(const float& dist);
-    Vector2 normalized() const;
-    Vector2 normalized(const float& dist) const;
-    float length() const;
+    [[nodiscard]] Vector2 normalized() const;
+    [[nodiscard]] Vector2 normalized(const float& dist) const;
+    [[nodiscard]] float length() const;
 };
 
 Vector2 operator*(const float& b, const Vector2& c);

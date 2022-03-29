@@ -5,13 +5,11 @@
 
 Complex::Complex()
 {
-    x = y = 0.0f;
+    x = y = 0.0;
 }
 
-Complex::Complex(const double& a, const double& b)
+Complex::Complex(const double& a, const double& b) : x(a), y(b)
 {
-    x = a;
-    y = b;
 }
 
 Complex Complex::operator*(const Complex& b) const
@@ -23,8 +21,8 @@ Complex Complex::operator*(const Complex& b) const
 
 Complex& Complex::operator*=(const Complex& b)
 {
-    //(x+yi)(bx+byi)=x bx-y by + i(y bx + x by)
-    double tmp = x * b.x - y * b.y;
+    // (x + yi)(bx + byi) = x * bx - y * by + i * (y * bx + x * by)
+    const double tmp = x * b.x - y * b.y;
     y = y * b.x + x * b.y;
     x = tmp;
     return *this;
@@ -40,8 +38,8 @@ Complex Complex::operator/(const Complex& b) const
 Complex& Complex::operator/=(const Complex& b)
 {
     // (x+yi)/(bx+byi)=(x+yi)(bx-byi)/(bx bx + by by)=1/length2() * (x bx + y by + i(y bx - x by))
-    double mult = 1.0 / b.length2();
-    double tmp = (x * b.x + y * b.y) * mult;
+    const double mult = 1.0 / b.length2();
+    const double tmp = (x * b.x + y * b.y) * mult;
     y = (y * b.x - x * b.y) * mult;
     x = tmp;
     return *this;

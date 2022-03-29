@@ -4,69 +4,79 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <SDL_opengl.h>
 
-CameraController::CameraController(double xpos, double ypos, double scale, double aspect)
+CameraController::CameraController(const double xpos, const double ypos, const double scale, const double aspect) :
+    m_VelDrag(.9), m_IsDragging(false), m_ScrollDrag(.87), m_ScrollVel(0)
 {
-    cam = Camera2D(xpos, ypos, scale, aspect);
-    veldrag = .9;
-    scrolldrag = .87;
-    mousezoompos = dragcurr = dragstart = vel = glm::vec2(0, 0);
-    isDragging = false;
-    scrollvel = 0;
+    m_Cam = Camera2D(xpos, ypos, scale, aspect);
+    m_MouseZoomPos = m_DragCurr = m_DragStart = m_Vel = glm::vec2(0, 0);
 }
 
-void CameraController::update(double timestep)
+void CameraController::update(const double timestep)
 {
-    cam.addPos(vel * timestep);
-    vel *= veldrag;
-    cam.addScroll(scrollvel * timestep);
-    scrollvel *= scrolldrag;
+    m_Cam.addPos(m_Vel * timestep);
+    m_Vel *= m_VelDrag;
+    m_Cam.addScroll(m_ScrollVel * timestep);
+    m_ScrollVel *= m_ScrollDrag;
 }
 
-void CameraController::setMouseZoomPos(double x, double y)
+void CameraController::setMouseZoomPos(const double x, const double y)
 {
-    mousezoompos = glm::dvec2(x, y);
+    m_MouseZoomPos = glm::dvec2(x, y);
 }
 
-void CameraController::drag(double x, double y)
+void CameraController::drag(const double x, const double y)
 {
-    if (isDragging)
+    if (m_IsDragging)
     {
-        dragstart = dragcurr;
-        dragcurr = glm::dvec2(x, y);
-        //std::cout<<cam.getAspect()/cam.getScaleAbsolute()*(dragstart-dragcurr).x;
-        cam.addPos(glm::dvec2(cam.getAspect() * cam.getScaleAbsolute() * (dragstart - dragcurr).x,
-                              (dragstart - dragcurr).y * cam.getScaleAbsolute()));
+        m_DragStart = m_DragCurr;
+        m_DragCurr = glm::dvec2(x, y);
+        // std::cout << cam.getAspect() / cam.getScaleAbsolute() * (dragstart-dragcurr).x;
+        m_Cam.addPos(
+        glm::dvec2(
+                m_Cam.getAspect() * m_Cam.getScaleAbsolute() * (m_DragStart - m_DragCurr).x,
+                (m_DragStart - m_DragCurr).y * m_Cam.getScaleAbsolute()
+            )
+        );
     }
     else
     {
-        isDragging = true;
-        dragstart = dragcurr = glm::dvec2(x, y);
+        m_IsDragging = true;
+        m_DragStart = m_DragCurr = glm::dvec2(x, y);
     }
 }
 
 void CameraController::enddrag()
 {
-    if (isDragging)
+    if (m_IsDragging)
     {
-        isDragging = false;
-        vel -= (dragcurr - dragstart) * veldrag * cam.getScaleAbsolute();
-        dragcurr = dragstart = glm::dvec2(0, 0);
+        m_IsDragging = false;
+        m_Vel -= (m_DragCurr - m_DragStart) * m_VelDrag * m_Cam.getScaleAbsolute();
+        m_DragCurr = m_DragStart = glm::dvec2(0, 0);
     }
 }
 
-void CameraController::mouseZoom(double zamount)
+void CameraController::mouseZoom(const double amount)
 {
-    /*double factor=(1-exp(2.30258509*zamount))/cam.getScaleAbsolute();
-    cam.addPos(glm::dvec2(cam.getAspect()*mousezoompos.x*factor,
-                        mousezoompos.y*factor));*/
+    /*
+     * double factor = (1 - exp(2.30258509 * zamount)) / cam.getScaleAbsolute();
+     * cam.addPos(
+     *     glm::dvec2(
+     *         cam.getAspect()*mousezoompos.x*factor,
+     *         mousezoompos.y*factor
+     *     )
+     * );
+     */
 
-    cam.addScroll(zamount);
-    scrollvel += zamount * scrolldrag;
+    m_Cam.addScroll(amount);
+    m_ScrollVel += amount * m_ScrollDrag;
 }
 
 void CameraController::applyCameraTransform() const
 {
-    glLoadMatrixd(glm::value_ptr(cam.getNDCTransform()));
+    glLoadMatrixd(glm::value_ptr(m_Cam.getNDCTransform()));
 }
 
-Camera2D CameraController::getCam() const { return cam; }
+Camera2D CameraController::getCam() const
+{
+    return m_Cam;
+}
