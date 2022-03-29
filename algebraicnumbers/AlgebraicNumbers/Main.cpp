@@ -1,12 +1,16 @@
 #include "Algebraic.h"
 #include "CameraController.h"
+#include "Complex.h"
+#include "DrawSurface.h"
+#include "Vector2.h"
 
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <GL/glu.h>
+#include <gl/glu.h>
 
 bool sRunning;
 int mouseposx;
@@ -24,12 +28,17 @@ bool mousedown = false;
 int mousezoom = 0;
 double ndcmousex = 0;
 double ndcmousey = 0;
-const int scwidth = 1280;
-const int scheight = 720;
+constexpr int WIDTH = 1280;
+constexpr int HEIGHT = 720;
 
+SDL_Window* window = nullptr;
+SDL_Renderer* renderer = nullptr;
 
 //square function. used in texture generation.
-float sq(float arg) { return arg * arg; }
+float sq(const float arg)
+{
+    return arg * arg;
+}
 
 void putblob(const float x, const float y, const float r)
 {
@@ -51,30 +60,35 @@ GLuint othertex(const unsigned sz)
     glBindTexture(GL_TEXTURE_2D, ret);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //aniso();
-    int n, x, y, xs = sz, ys = sz;
-    unsigned char* td = new unsigned char[xs * ys * 3];
+
+    int n, x, y, ys = static_cast<int>(sz);
+    const int xs = static_cast<int>(sz);
+    auto* td = new unsigned char[xs * ys * 3];
     float f;
+
     for (y = ys - 1; y >= 0; y--)
         for (x = xs - 1; x >= 0; x--)
         {
             n = (y * xs + x) * 3;
-            f = sq((float)sz / 2) / (1 + sq((float)x - xs / 2) + sq((float)y - ys / 2));
+            f = sq(static_cast<float>(sz) / 2) / (1 + sq(static_cast<float>(x) - xs / 2) + sq(static_cast<float>(y) - ys / 2));
             f = floor(f);
             if (f > 255) f = 255;
-            td[n] = td[n + 1] = td[n + 2] = (unsigned char)f;
+            td[n] = td[n + 1] = td[n + 2] = static_cast<unsigned char>(f);
         }
     gluBuild2DMipmaps(GL_TEXTURE_2D, 3, xs, ys, GL_RGB, GL_UNSIGNED_BYTE, td);
-    delete td;
+    delete[] td;
     return ret;
 }
 
 int main(int argc, char** argv)
 {
+    // (void)argc;
+    // (void)argv;
+
     sInit();
-    int list = 0;
-    std::vector<Point> p = precalc(14);
-    GLuint tex = othertex(256);
+    GLuint list = 0;
+    const std::vector<Point> p = precalc(14);
+    const GLuint tex = othertex(256);
 
     while (sLoop())
     {
@@ -82,7 +96,7 @@ int main(int argc, char** argv)
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         cam.applyCameraTransform();
-        //glScaled(.8,.8*1280/800.0,1);
+        // glScaled(.8,.8*1280/800.0,1);
         // glTranslated(-.5,-.30,0);
         if (!list)
         {
@@ -94,11 +108,11 @@ int main(int argc, char** argv)
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, tex);
             glBegin(GL_QUADS);
-            float k1 = .125;
-            float k2 = .55;
-            for (int n = 0; n < p.size(); n++)
+            const float k1 = .125f;
+            const float k2 = .55f;
+            for (const auto& n : p)
             {
-                switch (p.at(n).o)
+                switch (n.o)
                 {
                 case 1: glColor3f(1, 0, 0);
                     break;
@@ -106,39 +120,45 @@ int main(int argc, char** argv)
                     break;
                 case 3: glColor3f(0, 0, 1);
                     break;
-                case 4: glColor3f(0.7, 0.7, 0);
+                case 4: glColor3f(0.7f, 0.7f, 0);
                     break;
-                case 5: glColor3f(1, 0.6, 0);
+                case 5: glColor3f(1, 0.6f, 0);
                     break;
                 case 6: glColor3f(0, 1, 1);
                     break;
                 case 7: glColor3f(1, 0, 1);
                     break;
-                case 8: glColor3f(0.6, 0.6, 0.6);
+                case 8: glColor3f(0.6f, 0.6f, 0.6f);
                     break;
                 default: glColor3f(1, 1, 1);
                     break;
                 }
-                putblob(p.at(n).x, p.at(n).y, k1 * pow(k2, p.at(n).h - 3));
-                //cout<<vector2(p.at(n).x,p.at(n).y)<<endl;
+                putblob(static_cast<float>(n.x), static_cast<float>(n.y), k1 * powf(k2, static_cast<float>(n.h) - 3.0f));
+                // std::cout << Vector2(static_cast<float>(n.x), static_cast<float>(n.y)) << std::endl;
             }
             glEnd();
             glEndList();
         }
-        else if (list) glCallList(list);
-        //cout<<list;
+        else if (list)
+        {
+            glCallList(list);
+            // std::cout << list << std::endl;
+        }
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
         cam.update(1);
         sSync();
-        //cout<<Complex(1,1).length2()<<endl;
+        // std::cout << Complex(1,1).length2() << std::endl;
     }
     sQuit();
+
+    return 0;
 }
 
 bool sLoop()
 {
     sHandleEvents();
+    std::cout << sRunning << std::endl;
     return sRunning;
 }
 
@@ -151,11 +171,14 @@ void sInit()
         std::cerr << "Video initialization failed: " << SDL_GetError() << std::endl;
     }
 
-    const SDL_VideoInfo* videoInfo = SDL_GetVideoInfo();
-    if (!videoInfo)
-    {
-        std::cerr << "Video query failed: " << SDL_GetError() << std::endl;
-    }
+    window = SDL_CreateWindow(
+        "Algebraic Numbers",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        WIDTH,
+        HEIGHT,
+        SDL_WINDOW_OPENGL
+    );
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
@@ -166,11 +189,8 @@ void sInit()
 
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-    if (!SDL_SetVideoMode(1280, 800, 32, SDL_OPENGL))
-    {
-        std::cerr << "Video mode set failed: " << SDL_GetError() << std::endl;
-    }
-    std::cerr << "HI!" << std::endl;
+
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
 void sHandleEvents()
@@ -196,14 +216,14 @@ void sHandleEvents()
             {
             case SDL_BUTTON_LEFT:
                 mousedown = true;
-                ndcmousex = e.button.x * 2.0 / scwidth - 1;
-                ndcmousey = -e.button.y * 2.0 / scheight + 1;
+                ndcmousex = e.button.x * 2.0 / WIDTH - 1;
+                ndcmousey = -e.button.y * 2.0 / HEIGHT + 1;
                 break;
-            case SDL_BUTTON_WHEELUP:
-                mousezoom += 1;
-                break;
-            case SDL_BUTTON_WHEELDOWN:
-                mousezoom -= 1;
+            case SDL_MOUSEWHEEL:
+                if (e.wheel.y < 0)
+                    mousezoom += 1;
+                else
+                    mousezoom -= 1;
                 break;
             }
             break;
@@ -215,8 +235,8 @@ void sHandleEvents()
             }
             break;
         case SDL_MOUSEMOTION:
-            ndcmousex = e.motion.x * 2.0 / scwidth - 1;
-            ndcmousey = -e.motion.y * 2.0 / scheight + 1;
+            ndcmousex = e.motion.x * 2.0 / WIDTH - 1;
+            ndcmousey = -e.motion.y * 2.0 / HEIGHT + 1;
             break;
         }
     }
@@ -233,10 +253,12 @@ void sHandleEvents()
 
 void sSync()
 {
-    SDL_GL_SwapBuffers();
+    SDL_GL_SwapWindow(window);
 }
 
 void sQuit()
 {
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_Quit();
 }

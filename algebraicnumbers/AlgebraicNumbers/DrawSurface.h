@@ -128,5 +128,6 @@ public:
 
 private:
     SDL_Surface* m_Surface;
+    SDL_Renderer* m_Renderer;
     bool m_Dealloc;
 };

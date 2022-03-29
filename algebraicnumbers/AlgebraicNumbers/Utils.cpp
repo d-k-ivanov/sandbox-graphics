@@ -12,10 +12,10 @@ SDL_Surface* load_image(const char* filename, const Uint8 r, const Uint8 g, cons
     loadedImage = IMG_Load(filename);
     if (loadedImage != nullptr)
     {
-        optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
+        optimizedImage = SDL_ConvertSurfaceFormat(loadedImage, SDL_PIXELFORMAT_RGBA8888, 0);
         const Uint32 colorkey = SDL_MapRGB(loadedImage->format, r, g, b);
 
-        SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, colorkey);
+        SDL_SetColorKey(optimizedImage, SDL_TRUE, colorkey);
         SDL_FreeSurface(loadedImage);
     }
     return optimizedImage;
@@ -29,7 +29,7 @@ SDL_Surface* load_image(const char* filename)
 
     if (loadedImage != nullptr)
     {
-        optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
+        optimizedImage = SDL_ConvertSurfaceFormat(loadedImage, SDL_PIXELFORMAT_RGBA8888, 0);
         SDL_FreeSurface(loadedImage);
     }
     return optimizedImage;

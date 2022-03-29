@@ -156,7 +156,7 @@ void DrawSurface::drawDot(int x, int y, Uint32 color) const
 
 void DrawSurface::flipSurface()
 {
-    SDL_Flip(m_Surface);
+    // SDL_Flip(m_Surface);
 }
 
 void DrawSurface::drawLine(const int x1, const int y1, const int x2, const int y2, const Uint32 color) const

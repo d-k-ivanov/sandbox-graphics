@@ -94,7 +94,7 @@ void findroots_inner(Complex* c, const unsigned o, std::vector<Complex>* pr)
     }
     while ((r - ors).length2() > 1e-4);
     // std::cout << static_cast<int>(nonconvergent) << " A " << r << std::endl;
-    std::cout << i << " " << static_cast<int>(nonconvergent) << std::endl;
+    // std::cout << i << " " << static_cast<int>(nonconvergent) << std::endl;
     // fq[i]++;
     pr->push_back(r); // add the root
 
