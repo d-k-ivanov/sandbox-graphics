@@ -109,38 +109,38 @@ int main(int argc, char** argv)
             const float k2 = .55f;
             for (const auto& n : p)
             {
-                switch (n.o)
-                {
-                case 1: glColor3f(1, 0, 0);
-                    break;
-                case 2: glColor3f(0, 1, 0);
-                    break;
-                case 3: glColor3f(0, 0, 1);
-                    break;
-                case 4: glColor3f(0.7f, 0.7f, 0);
-                    break;
-                case 5: glColor3f(1, 0.6f, 0);
-                    break;
-                case 6: glColor3f(0, 1, 1);
-                    break;
-                case 7: glColor3f(1, 0, 1);
-                    break;
-                case 8: glColor3f(0.6f, 0.6f, 0.6f);
-                    break;
-                default: glColor3f(1, 1, 1);
-                    break;
-                }
+                // switch (n.o)
+                // {
+                // case 1: glColor3f(1, 0, 0);
+                //     break;
+                // case 2: glColor3f(0, 1, 0);
+                //     break;
+                // case 3: glColor3f(0, 0, 1);
+                //     break;
+                // case 4: glColor3f(0.7f, 0.7f, 0);
+                //     break;
+                // case 5: glColor3f(1, 0.6f, 0);
+                //     break;
+                // case 6: glColor3f(0, 1, 1);
+                //     break;
+                // case 7: glColor3f(1, 0, 1);
+                //     break;
+                // case 8: glColor3f(0.6f, 0.6f, 0.6f);
+                //     break;
+                // default: glColor3f(1, 1, 1);
+                //     break;
+                // }
                 // Alternative coloring
-                // float u = static_cast<float>(n.o);
-                // if (u > 8)
-                //     u = 8;
-                // u /= 8;
-                // float c1[4] = {55, 126, 184, 0.1};
-                // float c2[4] = {255, 127, 0, 1};
-                // float c3[4] = { (c1[0] * (1.0f - u) + c2[0] * u) / 255.0f,
-                //                 (c1[1] * (1.0f - u) + c2[1] * u) / 255.0f,
-                //                 (c1[2] * (1.0f - u) + c2[2] * u) / 255.0f };
-                // glColor4fv(c3);
+                float u = static_cast<float>(n.o);
+                if (u > 8)
+                    u = 8;
+                u /= 8;
+                float c1[4] = {55, 126, 184, 0.1};
+                float c2[4] = {255, 127, 0, 1};
+                float c3[4] = { (c1[0] * (1.0f - u) + c2[0] * u) / 255.0f,
+                                (c1[1] * (1.0f - u) + c2[1] * u) / 255.0f,
+                                (c1[2] * (1.0f - u) + c2[2] * u) / 255.0f };
+                glColor4fv(c3);
                 putblob(
                     static_cast<float>(n.x),
                     static_cast<float>(n.y),
