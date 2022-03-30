@@ -10,7 +10,7 @@
 
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <gl/glu.h>
+#include <gl/GLU.h>
 
 bool sRunning;
 int mouseposx;
@@ -28,11 +28,10 @@ bool mousedown = false;
 int mousezoom = 0;
 double ndcmousex = 0;
 double ndcmousey = 0;
-constexpr int WIDTH = 1280;
-constexpr int HEIGHT = 720;
+constexpr int WIDTH = 1840;
+constexpr int HEIGHT = 1000;
 
 SDL_Window* window = nullptr;
-SDL_Renderer* renderer = nullptr;
 
 //square function. used in texture generation.
 float sq(const float arg)
@@ -83,9 +82,6 @@ GLuint othertex(const unsigned sz)
 
 int main(int argc, char** argv)
 {
-    // (void)argc;
-    // (void)argv;
-
     sInit();
     GLuint list = 0;
     const std::vector<Point> p = precalc(14);
@@ -97,7 +93,7 @@ int main(int argc, char** argv)
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         cam.applyCameraTransform();
-        // glScaled(.8, .8 * 1280 / 800.0, 1);
+        // glScaled(.8, .8 * 1840 / 1000.0, 1);
         // glTranslated(-.5, -.30, 0);
         if (!list)
         {
@@ -181,7 +177,7 @@ bool sLoop()
 void sInit()
 {
     sRunning = true;
-    cam = CameraController(0, 0, 0, 1280.0 / 800);
+    cam = CameraController(0, 0, 0, 1840.0 / 1000);
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         std::cerr << "Video initialization failed: " << SDL_GetError() << std::endl;
@@ -189,12 +185,20 @@ void sInit()
 
     window = SDL_CreateWindow(
         "Algebraic Numbers",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
         WIDTH,
         HEIGHT,
-        SDL_WINDOW_OPENGL
+        SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP // | SDL_WINDOW_FULLSCREEN
     );
+
+    if (window == nullptr)
+    {
+        std::cerr << "Could not create window: " << SDL_GetError() << std::endl;
+    }
+
+    // SDL_GLContext context = SDL_GL_CreateContext(window);
+    SDL_GL_CreateContext(window);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
@@ -205,8 +209,6 @@ void sInit()
 
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
 void sHandleEvents()
@@ -274,7 +276,6 @@ void sSync()
 
 void sQuit()
 {
-    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
