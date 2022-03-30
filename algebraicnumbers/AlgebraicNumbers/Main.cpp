@@ -70,7 +70,8 @@ GLuint othertex(const unsigned sz)
         for (x = xs - 1; x >= 0; x--)
         {
             n = (y * xs + x) * 3;
-            f = sq(static_cast<float>(sz) / 2) / (1 + sq(static_cast<float>(x) - xs / 2) + sq(static_cast<float>(y) - ys / 2));
+            f = sq(static_cast<float>(sz) / 2) / (1 + sq(static_cast<float>(x) - xs / 2) + sq(
+                static_cast<float>(y) - ys / 2));
             f = floor(f);
             if (f > 255) f = 255;
             td[n] = td[n + 1] = td[n + 2] = static_cast<unsigned char>(f);
@@ -133,7 +134,22 @@ int main(int argc, char** argv)
                 default: glColor3f(1, 1, 1);
                     break;
                 }
-                putblob(static_cast<float>(n.x), static_cast<float>(n.y), k1 * powf(k2, static_cast<float>(n.h) - 3.0f));
+                // Alternative coloring
+                // float u = static_cast<float>(n.o);
+                // if (u > 8)
+                //     u = 8;
+                // u /= 8;
+                // float c1[4] = {55, 126, 184, 0.1};
+                // float c2[4] = {255, 127, 0, 1};
+                // float c3[4] = { (c1[0] * (1.0f - u) + c2[0] * u) / 255.0f,
+                //                 (c1[1] * (1.0f - u) + c2[1] * u) / 255.0f,
+                //                 (c1[2] * (1.0f - u) + c2[2] * u) / 255.0f };
+                // glColor4fv(c3);
+                putblob(
+                    static_cast<float>(n.x),
+                    static_cast<float>(n.y),
+                    k1 * powf(k2, static_cast<float>(n.h) - 3.0f)
+                );
                 // std::cout << Vector2(static_cast<float>(n.x), static_cast<float>(n.y)) << std::endl;
             }
             glEnd();
