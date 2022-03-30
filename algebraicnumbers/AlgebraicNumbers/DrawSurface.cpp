@@ -130,7 +130,10 @@ const SDL_Surface* DrawSurface::constGetSurface() const
     return m_Surface;
 }
 
-//SDL_Surface* DrawSurface::getSurface(){return surface;}
+// SDL_Surface* DrawSurface::getSurface()
+// {
+//     return surface
+// }
 
 Uint32 DrawSurface::pickCol(int x, int y) const
 {
@@ -156,7 +159,7 @@ void DrawSurface::drawDot(int x, int y, Uint32 color) const
 
 void DrawSurface::flipSurface()
 {
-    // SDL_Flip(m_Surface);
+    // SDL_RenderPresent(m_Renderer);
 }
 
 void DrawSurface::drawLine(const int x1, const int y1, const int x2, const int y2, const Uint32 color) const

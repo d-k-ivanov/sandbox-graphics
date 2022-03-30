@@ -5,8 +5,6 @@
 #include <vector>
 #include <cstdlib>
 
-#include <SDL.h>
-
 char nonconvergent; // int fq[5001];
 
 double frnd()

@@ -61,7 +61,8 @@ GLuint othertex(const unsigned sz)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    int n, x, y, ys = static_cast<int>(sz);
+    int n, x, y;
+    const int ys = static_cast<int>(sz);
     const int xs = static_cast<int>(sz);
     auto* td = new unsigned char[xs * ys * 3];
     float f;
@@ -70,8 +71,7 @@ GLuint othertex(const unsigned sz)
         for (x = xs - 1; x >= 0; x--)
         {
             n = (y * xs + x) * 3;
-            f = sq(static_cast<float>(sz) / 2) / (1 + sq(static_cast<float>(x) - xs / 2) + sq(
-                static_cast<float>(y) - ys / 2));
+            f = sq(static_cast<float>(sz) / 2.0f) / (1 + sq(static_cast<float>(x) - static_cast<float>(xs) / 2.0f) + sq(static_cast<float>(y) - static_cast<float>(ys) / 2.0f));
             f = floor(f);
             if (f > 255) f = 255;
             td[n] = td[n + 1] = td[n + 2] = static_cast<unsigned char>(f);
@@ -97,8 +97,8 @@ int main(int argc, char** argv)
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         cam.applyCameraTransform();
-        // glScaled(.8,.8*1280/800.0,1);
-        // glTranslated(-.5,-.30,0);
+        // glScaled(.8, .8 * 1280 / 800.0, 1);
+        // glTranslated(-.5, -.30, 0);
         if (!list)
         {
             list = glGenLists(1);
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
 bool sLoop()
 {
     sHandleEvents();
-    std::cout << sRunning << std::endl;
+    // std::cout << sRunning << std::endl;
     return sRunning;
 }
 
