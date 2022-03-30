@@ -70,7 +70,9 @@ GLuint othertex(const unsigned sz)
         for (x = xs - 1; x >= 0; x--)
         {
             n = (y * xs + x) * 3;
-            f = sq(static_cast<float>(sz) / 2.0f) / (1 + sq(static_cast<float>(x) - static_cast<float>(xs) / 2.0f) + sq(static_cast<float>(y) - static_cast<float>(ys) / 2.0f));
+            f = sq(static_cast<float>(sz) / 2.0f)
+                / (1 + sq(static_cast<float>(x) - static_cast<float>(xs) / 2.0f)
+                    + sq(static_cast<float>(y) - static_cast<float>(ys) / 2.0f));
             f = floor(f);
             if (f > 255) f = 255;
             td[n] = td[n + 1] = td[n + 2] = static_cast<unsigned char>(f);
@@ -137,9 +139,11 @@ int main(int argc, char** argv)
                 u /= 8;
                 float c1[4] = {55, 126, 184, 0.1};
                 float c2[4] = {255, 127, 0, 1};
-                float c3[4] = { (c1[0] * (1.0f - u) + c2[0] * u) / 255.0f,
-                                (c1[1] * (1.0f - u) + c2[1] * u) / 255.0f,
-                                (c1[2] * (1.0f - u) + c2[2] * u) / 255.0f };
+                float c3[4] = {
+                    (c1[0] * (1.0f - u) + c2[0] * u) / 255.0f,
+                    (c1[1] * (1.0f - u) + c2[1] * u) / 255.0f,
+                    (c1[2] * (1.0f - u) + c2[2] * u) / 255.0f
+                };
                 glColor4fv(c3);
                 putblob(
                     static_cast<float>(n.x),
@@ -189,7 +193,7 @@ void sInit()
         SDL_WINDOWPOS_CENTERED,
         WIDTH,
         HEIGHT,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP // | SDL_WINDOW_FULLSCREEN
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE // | SDL_WINDOW_FULLSCREEN_DESKTOP // | SDL_WINDOW_FULLSCREEN
     );
 
     if (window == nullptr)
@@ -219,6 +223,16 @@ void sHandleEvents()
     {
         switch (e.type)
         {
+        case SDL_WINDOWEVENT:
+            switch (e.window.event)
+            {
+            case SDL_WINDOWEVENT_RESIZED:
+                glViewport(0, 0, e.window.data1, e.window.data2);
+                break;
+            default:
+                break;
+            }
+            break;
         case SDL_QUIT:
             sRunning = false;
             break;
@@ -227,6 +241,8 @@ void sHandleEvents()
             {
             case SDLK_ESCAPE:
                 sRunning = false;
+                break;
+            default:
                 break;
             }
         case SDL_MOUSEBUTTONDOWN:
@@ -237,24 +253,32 @@ void sHandleEvents()
                 ndcmousex = e.button.x * 2.0 / WIDTH - 1;
                 ndcmousey = -e.button.y * 2.0 / HEIGHT + 1;
                 break;
-            case SDL_MOUSEWHEEL:
-                if (e.wheel.y < 0)
-                    mousezoom += 1;
-                else
-                    mousezoom -= 1;
+            default:
                 break;
             }
             break;
         case SDL_MOUSEBUTTONUP:
-            if (e.button.button == SDL_BUTTON_LEFT)
+            switch (e.button.button)
             {
+            case SDL_BUTTON_LEFT:
                 mousedown = false;
                 cam.enddrag();
+                break;
+            default:
+                break;
             }
+            break;
+        case SDL_MOUSEWHEEL:
+            if (e.wheel.y < 0)
+                mousezoom += 1;
+            else
+                mousezoom -= 1;
             break;
         case SDL_MOUSEMOTION:
             ndcmousex = e.motion.x * 2.0 / WIDTH - 1;
             ndcmousey = -e.motion.y * 2.0 / HEIGHT + 1;
+            break;
+        default:
             break;
         }
     }
