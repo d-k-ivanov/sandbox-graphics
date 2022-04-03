@@ -10,7 +10,16 @@
         const canvas = document.createElement('canvas');
         canvas.width = 1024;
         canvas.height = 768;
-        canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:5px solid black";
+        canvas.style = `
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            margin: auto;
+            border:5px solid black;
+            border-radius: 15px
+        `;
         document.body.appendChild(canvas);
 
         const gl = canvas.getContext('webgl');
