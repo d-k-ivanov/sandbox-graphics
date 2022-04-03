@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <script type="text/javascript">
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 768;
+        document.body.appendChild(canvas);
+
+        const gl = canvas.getContext('webgl');
+        if (!gl)
+        {
+            throw new Error('Unable to use WebGL. Your device may not support it.');
+        }
+
+        gl.clearColor(0, 0.5, 1, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+            // <-- Here we will add more code
+    </script>
+</body>
+
+</html>
