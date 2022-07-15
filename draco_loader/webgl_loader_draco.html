@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Monospace;
+            background-color: #F5F5F5;
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #formItem label {
+            display: block;
+            text-align: center;
+        }
+
+        .header {
+            width: 50%;
+            height: 50px;
+            float: left;
+            padding-left: 30px;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./libs/three.module.js"
+            }
+        }
+    </script>
+    <script src="libs/stats.min.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <!-- <script src=> -->
+    </div>
+    <script type="module">
+        import * as THREE from 'three';
+        import { DRACOLoader } from './libs/DRACOLoader.js';
+        import { OrbitControls } from './libs/OrbitControls.js';
+
+        let controls, camera, scene, renderer, stats;
+
+        const container = document.querySelector('#container');
+
+        // Configure and create Draco decoder.
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('./libs/draco/');
+        dracoLoader.setDecoderConfig({ type: 'js' });
+
+        init();
+        animate();
+
+        function init()
+        {
+            camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 15);
+            camera.position.set(3, 0.25, 3);
+
+            scene = new THREE.Scene();
+            // scene.background = new THREE.Color(0x443333);
+            // scene.fog = new THREE.Fog(0x443333, 1, 4);
+
+            // Ground
+            const plane = new THREE.Mesh(
+                new THREE.PlaneGeometry(8, 8),
+                new THREE.MeshPhongMaterial({ color: 0x999999, specular: 0x101010 })
+            );
+            plane.rotation.x = - Math.PI / 2;
+            plane.position.y = 0.03;
+            plane.receiveShadow = true;
+            scene.add(plane);
+
+            // Lights
+            const hemiLight = new THREE.HemisphereLight(0x443333, 0x111122);
+            scene.add(hemiLight);
+            // const ambientLight = new THREE.AmbientLight(0x443333);
+            // scene.add(ambientLight);
+
+            const spotLight = new THREE.SpotLight();
+            spotLight.angle = Math.PI / 16;
+            spotLight.penumbra = 0.5;
+            spotLight.castShadow = true;
+            spotLight.position.set(- 1, 1, 1);
+            scene.add(spotLight);
+            // light = new THREE.DirectionalLight(0xFFFFFF, 0.7);
+            // light.position.set(-200, -100, -400);
+            // scene.add(light);
+
+            // dracoLoader.load('bunny.drc', function (geometry)
+            // dracoLoader.load('diamond.drc', function (geometry)
+            dracoLoader.load('tooth.drc', function (geometry)
+            {
+                geometry.computeVertexNormals();
+                const material = new THREE.MeshStandardMaterial({ color: 0xFF6060 });
+                geometry.translate(0, 15, 0);
+                const mesh = new THREE.Mesh(geometry, material);
+                // mesh.scale.set(new THREE.Vector3( 0.1, 0.1, 0.1 ));
+                mesh.scale.set(0.025, 0.025, 0.025);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                scene.add(mesh);
+                // Release decoder resources.
+                dracoLoader.dispose();
+            });
+
+            // renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            // stats
+            stats = new Stats();
+            stats.setMode(1);
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.top = '0px';
+            stats.domElement.style.zIndex = 100;
+            stats.domElement.style.color = "#aaa";
+            stats.domElement.style.background = "transparent";
+            // stats.domElement.style.display = "none";
+            container.appendChild(stats.domElement);
+
+            // CONTROLS
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.target.set(0, 0.1, 0);
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function onWindowResize()
+        {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate()
+        {
+            render();
+            requestAnimationFrame(animate);
+        }
+
+        function render()
+        {
+            controls.update();
+            // const timer = Date.now() * 0.0003;
+            // camera.position.x = Math.sin(timer) * 0.5;
+            // camera.position.z = Math.cos(timer) * 0.5;
+            // camera.lookAt(0, 0.1, 0);
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+
+</html>
