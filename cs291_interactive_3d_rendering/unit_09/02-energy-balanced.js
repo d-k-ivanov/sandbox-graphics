@@ -1,8 +1,8 @@
 "use strict";
 
 /*global THREE, requestAnimationFrame, dat */
-THREE.ShaderTypes = {
 
+THREE.ShaderTypes = {
     'phong': {
         uniforms: {
 
@@ -29,7 +29,6 @@ THREE.ShaderTypes = {
         },
 
         vertexShader: [
-
             "varying vec3 vNormal;",
             "varying vec3 vViewPosition;",
 
@@ -45,7 +44,6 @@ THREE.ShaderTypes = {
         ].join("\n"),
 
         fragmentShader: [
-
             "uniform vec3 uMaterialColor;",
             "uniform vec3 uSpecularColor;",
 
@@ -207,9 +205,6 @@ var phongBal = false;
 var ambientLight, light;
 var teapot;
 var phongMaterial, phongBalancedMaterial;
-
-init();
-animate();
 
 function init()
 {
@@ -420,4 +415,13 @@ function fillScene()
         phongBal ? phongBalancedMaterial : phongMaterial);
 
     scene.add(teapot);
+}
+
+try
+{
+    init();
+    animate();
+} catch (e)
+{
+    alert(e);
 }
