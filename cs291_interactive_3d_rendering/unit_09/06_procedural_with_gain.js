@@ -1,6 +1,6 @@
 "use strict";
 
-// Procedural texturing
+// Procedural texturing, with gain
 // Your task is to change the fragment shader, and only that
 // Edit the file named fragment.glsl in the tab above.
 
@@ -12,8 +12,8 @@ var clock = new THREE.Clock();
 
 async function loadShadersAndRun() {
     // Load Shaders
-    vs = await (await fetch('unit_09/05_vertex.glsl')).text();
-    fs = await (await fetch('unit_09/05_fragment.glsl')).text();
+    vs = await (await fetch('unit_09/06_vertex.glsl')).text();
+    fs = await (await fetch('unit_09/06_fragment.glsl')).text();
 
     init();
     fillScene();
@@ -36,6 +36,9 @@ function fillScene()
     scene.add(ambientLight);
     scene.add(light);
 
+    // Calls that add things to scene (that should be graded) go here
+    // Do not add here anything that is unrelated to exercise
+    // Like grids or axes
     var teapotSize = 400;
     var materialColor = new THREE.Color();
     materialColor.setRGB(1.0, 0.8, 0.6);
@@ -65,6 +68,7 @@ function init()
     // CAMERA
     camera = new THREE.PerspectiveCamera(45, canvasRatio, 1, 80000);
     camera.position.set(-600, 900, 1300);
+
     // CONTROLS
     cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
     cameraControls.target.set(0, 0, 0);
@@ -95,13 +99,13 @@ function render()
     // take inputs from sliders and modify shader's values
     phongMaterial.uniforms.uKd.value = effectController.kd;
     phongMaterial.uniforms.uScale.value = effectController.scale;
+    phongMaterial.uniforms.uGainAlpha.value = effectController.gainAlpha;
 
     var materialColor = new THREE.Color();
     materialColor.setHSL(effectController.hue, effectController.saturation, effectController.lightness);
     phongMaterial.uniforms.uMaterialColor.value.copy(materialColor);
 
     light.position.set(effectController.lx, effectController.ly, effectController.lz);
-
     light.color.setHSL(effectController.lhue, effectController.lsaturation, effectController.llightness);
 
     renderer.render(scene, camera);
@@ -124,17 +128,19 @@ function createShaderMaterial(id, light)
                 uScale: {
                     type: "f",
                     value: 0.2
+                },
+                uGainAlpha: {
+                    type: "f",
+                    value: 0.1
                 }
             }
         }
     };
 
     var shader = shaderTypes[id];
-
     var u = THREE.UniformsUtils.clone(shader.uniforms);
 
     var material = new THREE.ShaderMaterial({ uniforms: u, vertexShader: vs, fragmentShader: fs });
-
     material.uniforms.uDirLightPos.value = light.position;
     material.uniforms.uDirLightColor.value = light.color;
 
@@ -143,9 +149,11 @@ function createShaderMaterial(id, light)
 
 function setupGui()
 {
+
     effectController = {
         kd: 0.7,
         scale: 0.2,
+        gainAlpha: 0.1,
 
         hue: 0.463,
         saturation: 0.46,
@@ -153,7 +161,7 @@ function setupGui()
 
         lhue: 0.04,
         lsaturation: 0.01,
-        llightness: 0.8,
+        llightness: 0.7,
 
         // bizarrely, if you initialize these with negative numbers, the sliders
         // will not show any decimal places.
@@ -169,6 +177,7 @@ function setupGui()
     h = gui.addFolder("Material control");
     h.add(effectController, "kd", 0.0, 1.0, 0.025).name("Kd");
     h.add(effectController, "scale", 0.01, 1.0, 0.025).name("function scale");
+    h.add(effectController, "gainAlpha", 0.01, 0.99, 0.025).name("gain alpha");
 
     // material (color)
     h = gui.addFolder("Material color");
