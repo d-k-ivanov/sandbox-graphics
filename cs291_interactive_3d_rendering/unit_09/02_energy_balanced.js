@@ -275,7 +275,6 @@ function createShaderMaterial(id, light, ambientLight)
 }
 
 // EVENT HANDLERS
-
 function onWindowResize()
 {
     SCREEN_WIDTH = window.innerWidth;
@@ -317,9 +316,9 @@ function setupGui()
 
     var gui = new dat.GUI();
 
-    // material (attributes)
     gui.add(effectController, "energyBalanced").name("energy balanced");
 
+    // material (attributes)
     h = gui.addFolder("Material control");
 
     h.add(effectController, "shininess", 1.0, 100.0, 1.0).name("m_shininess");
@@ -329,7 +328,6 @@ function setupGui()
     h.add(effectController, "metallic");
 
     // material (color)
-
     h = gui.addFolder("Material color");
 
     h.add(effectController, "hue", 0.0, 1.0, 0.025).name("m_hue");
@@ -337,7 +335,6 @@ function setupGui()
     h.add(effectController, "lightness", 0.0, 1.0, 0.025).name("m_lightness");
 
     // light (point)
-
     h = gui.addFolder("Light color");
 
     h.add(effectController, "lhue", 0.0, 1.0, 0.025).name("hue");
@@ -345,7 +342,6 @@ function setupGui()
     h.add(effectController, "llightness", 0.0, 1.0, 0.025).name("lightness");
 
     // light (directional)
-
     h = gui.addFolder("Light direction");
 
     h.add(effectController, "lx", -1.0, 1.0, 0.025).name("x");
