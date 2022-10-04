@@ -9,7 +9,8 @@ var cameraControls, effectController, phongMaterial;
 var clock = new THREE.Clock();
 var loader = new THREE.FileLoader();
 
-async function loadShadersAndRun() {
+async function loadShadersAndRun()
+{
     // Load Shaders
     // loader.load('unit_09/04_toon_vertex.glsl'  , function ( data ) {vs =  data; },);
     // loader.load('unit_09/04_toon_fragment.glsl', function ( data ) {fs =  data; run() },);

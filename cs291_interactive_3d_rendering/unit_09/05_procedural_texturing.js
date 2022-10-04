@@ -10,7 +10,8 @@ var camera, scene, renderer, light, vs, fs;
 var cameraControls, effectController, phongMaterial;
 var clock = new THREE.Clock();
 
-async function loadShadersAndRun() {
+async function loadShadersAndRun()
+{
     // Load Shaders
     vs = await (await fetch('unit_09/05_vertex.glsl')).text();
     fs = await (await fetch('unit_09/05_fragment.glsl')).text();
