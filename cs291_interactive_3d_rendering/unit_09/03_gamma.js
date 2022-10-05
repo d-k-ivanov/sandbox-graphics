@@ -16,6 +16,11 @@ var geometry;
 var material, white_material, gradient_material;
 var white_ground, gradient_ground;
 
+var path = "";
+var texture;
+var textureWhite;
+var textureBlack;
+
 function init()
 {
     canvasWidth = window.innerWidth;
@@ -42,9 +47,33 @@ function init()
     light2.target.position.set(1000 / overlap, 0, 0);
     light2.angle = 0.7;
 
+    // Texture
+    const textureLoader = new THREE.TextureLoader();
+    // texture = textureLoader.load(path + '../textures/concrete.jpg');
+    // texture = textureLoader.load(path + '../textures/sky-01.jpg');
+    // texture = textureLoader.load(path + '../textures/transparent.png');
+    texture = textureLoader.load(path + '../textures/white.png');
+    // texture = textureLoader.load(path + '../textures/black.png');
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    // textureWhite = textureLoader.load(path + '../textures/white.png');
+    // textureWhite.wrapS = THREE.RepeatWrapping;
+    // textureWhite.wrapT = THREE.RepeatWrapping;
+    // textureBlack = textureLoader.load(path + '../textures/black.png');
+    // textureBlack.wrapS = THREE.RepeatWrapping;
+    // textureBlack.wrapT = THREE.RepeatWrapping;
+
     // GROUND
     white_material = new THREE.MeshPhongMaterial({ color: 0xFFFFFF, specular: 0x0, side: THREE.DoubleSide });
-    gradient_material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors, specular: 0x0, side: THREE.DoubleSide });
+    // white_material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, side: THREE.DoubleSide });
+    white_material.map = texture;
+    // white_material.map = textureWhite;
+
+    gradient_material = new THREE.MeshPhongMaterial({ specular: 0x0, side: THREE.DoubleSide });
+    // gradient_material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
+    gradient_material.map = texture;
+    // gradient_material.map = textureBlack;
+    gradient_material.vertexColors = true;
 
     // material = white_material;
 
@@ -124,7 +153,7 @@ function init()
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(canvasWidth, canvasHeight);
     renderer.setClearColor(new THREE.Color(0xFFFFFF), 1.0);
-    renderer.outputEncoding = THREE.sRGBEncoding;
+    // renderer.outputEncoding = THREE.sRGBEncoding;
 
     var container = document.getElementById('container');
     container.appendChild(renderer.domElement);
@@ -148,9 +177,9 @@ function setupGui()
     ec = {
         left: 0.7,
         right: 0.2,
-        gamma: true,
+        gamma: false,
         gammaIn: false, // we want the input color to be untouched
-        gammaOut: true,
+        gammaOut: false,
         colored: false,
         gradient: false
     };
@@ -182,10 +211,23 @@ function setupGui()
         // if you change gamma input, you need to regenerate the material
         white_material.needsUpdate = true;
         gradient_material.needsUpdate = true;
-        //ec.gammaIn = ec.gamma;
-        ec.gammaOut = ec.gamma;
-        renderer.gammaInput = ec.gammaIn;
-        renderer.gammaOutput = ec.gammaOut;
+
+        // renderer.gammaInput = ec.gammaIn;   // Deprecated
+        // renderer.gammaOutput = ec.gammaOut; // Deprecated
+        if (ec.gamma)
+        {
+            texture.encoding = THREE.sRGBEncoding;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+        }
+        else
+        {
+            texture.encoding = THREE.LinearEncoding;
+            renderer.outputEncoding = THREE.LinearEncoding;
+        }
+
+        white_material.map = texture;
+        gradient_material.map = texture;
+
         light1.intensity = ec.left;
         light2.intensity = ec.right;
         if (ec.colored)
@@ -204,14 +246,35 @@ function setupGui()
         // if you change gamma input, you need to regenerate the material
         white_material.needsUpdate = true;
         gradient_material.needsUpdate = true;
-        renderer.gammaInput = ec.gammaIn;
+
+        // renderer.gammaInput = ec.gammaIn; // Deprecated
+        if (ec.gammaIn)
+        {
+            texture.encoding = THREE.sRGBEncoding;
+        }
+        else
+        {
+            texture.encoding = THREE.LinearEncoding;
+        }
+
+        white_material.map = texture;
+        gradient_material.map = texture;
     });
 
     element = gui.add( ec, "gammaOut").name("Gamma output").onChange( function() {
         // if you change gamma output, you need to regenerate the material
         white_material.needsUpdate = true;
         gradient_material.needsUpdate = true;
-        renderer.gammaOutput = ec.gammaOut;
+
+        // renderer.gammaOutput = ec.gammaOut; // Deprecated
+        if (ec.gammaOut)
+        {
+            renderer.outputEncoding = THREE.sRGBEncoding;
+        }
+        else
+        {
+            renderer.outputEncoding = THREE.LinearEncoding;
+        }
     });
 
     element = gui.add(ec, "colored").name("Colored lights").onChange(function ()
