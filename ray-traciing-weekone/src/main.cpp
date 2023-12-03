@@ -6,7 +6,7 @@
 int main()
 {
     // Image
-    constexpr int image_width  = 256;
+    constexpr int image_width = 256;
     constexpr int image_height = 256;
 
     // Render
@@ -22,7 +22,6 @@ int main()
             const auto r = static_cast<double>(i) / (image_width - 1);
             const auto g = static_cast<double>(j) / (image_height - 1);
             const auto b = 0;
-
             const auto pixel_color = color(r, g, b);
             write_color(std::cout, pixel_color);
         }

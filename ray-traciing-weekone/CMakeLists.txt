@@ -30,8 +30,8 @@ set(SOURCE_FILES
 
     ## Sources
     src/color.h
+    src/ray.h
     src/vec3.h
-
 )
 source_group("Sources" SOURCE_FILES REGULAR_EXPRESSION ".*\\.(h|cpp)")
 source_group("Shaders" SOURCE_FILES REGULAR_EXPRESSION ".*\\.glsl")
