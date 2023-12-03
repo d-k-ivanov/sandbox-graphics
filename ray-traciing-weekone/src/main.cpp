@@ -1,3 +1,6 @@
+#include "color.h"
+#include "vec3.h"
+
 #include <iostream>
 
 int main()
@@ -15,15 +18,13 @@ int main()
         std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
         for(int i = 0; i < image_width; ++i)
         {
-            auto r = static_cast<double>(i) / (image_width - 1);
-            auto g = static_cast<double>(j) / (image_height - 1);
-            auto b = 0;
+            // Generate colours:
+            const auto r = static_cast<double>(i) / (image_width - 1);
+            const auto g = static_cast<double>(j) / (image_height - 1);
+            const auto b = 0;
 
-            int ir = static_cast<int>(255.999 * r);
-            int ig = static_cast<int>(255.999 * g);
-            int ib = static_cast<int>(255.999 * b);
-
-            std::cout << ir << ' ' << ig << ' ' << ib << '\n';
+            const auto pixel_color = color(r, g, b);
+            write_color(std::cout, pixel_color);
         }
     }
     std::clog << "\rDone.                 \n";
