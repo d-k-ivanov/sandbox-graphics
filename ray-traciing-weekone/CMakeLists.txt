@@ -25,8 +25,12 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 endif()
 
 set(SOURCE_FILES
-    ## Main
+    ## Entrypoint
     src/main.cpp
+
+    ## Sources
+    src/color.h
+    src/vec3.h
 
 )
 source_group("Sources" SOURCE_FILES REGULAR_EXPRESSION ".*\\.(h|cpp)")
