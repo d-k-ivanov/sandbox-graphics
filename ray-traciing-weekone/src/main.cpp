@@ -4,12 +4,26 @@
 
 #include <iostream>
 
-color ray_color(const ray &r)
+bool hit_sphere(const point3 &center, double radius, const ray &r)
 {
+    const vec3 oc = r.origin() - center;
+    const auto a = dot(r.direction(), r.direction());
+    const auto b = 2.0 * dot(oc, r.direction());
+    const auto c = dot(oc, oc) - radius * radius;
+    const auto discriminant = b * b - 4 * a * c;
+    return (discriminant >= 0);
+}
+
+color ray_color(const ray &r, int pixel_w)
+{
+    if(hit_sphere(point3(0, 0, -1), 0.5, r))
+    {
+        return {1, 0, 0};
+    }
     // blendedValue = (1 − a) * startValue + a * endValue
     const vec3 unit_direction = unit_vector(r.direction());
     const auto a = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+    return (1.0 - a) * color(1.0, 1.0, 1.0) + (pixel_w % 2 == 0 ? a * color(0.5, 0.7, 1.0): a * color(0.5, 1.0, 0.7));
 }
 
 int main()
@@ -65,7 +79,7 @@ int main()
             auto ray_direction = pixel_center - camera_center;
             ray r(camera_center, ray_direction);
 
-            const color pixel_color = ray_color(r);
+            const color pixel_color = ray_color(r, i);
             write_color(std::cout, pixel_color);
         }
     }
