@@ -4,6 +4,12 @@
 
 #include <iostream>
 
+// Sphere: x^2 + y^2 + z^2 = r^2
+// Sphere at poiint C: (x−C(x))^2+(y−C(y))^2+(z−C(z))^2 = r^2
+// t^2 * b * b + 2 * t * b * (A−C) + (A−C) * (A−C) − r^2 = 0
+// a = b * b
+// b = 2 * b * (A−C)
+// c = (A−C) * (A−C) − r^2
 double hit_sphere(const point3 &center, double radius, const ray &r)
 {
     const vec3 oc = r.origin() - center;
@@ -18,9 +24,25 @@ double hit_sphere(const point3 &center, double radius, const ray &r)
     return (-b - sqrt(discriminant)) / (2.0 * a);
 }
 
+// Sphere Optimization:
+//  b = 2 * h
+double hit_sphere_rev(const point3& center, double radius, const ray& r) {
+    const vec3 oc = r.origin() - center;
+    const auto a = r.direction().length_squared();
+    const auto half_b = dot(oc, r.direction());
+    const auto c = oc.length_squared() - radius*radius;
+    const auto discriminant = half_b*half_b - a*c;
+
+    if (discriminant < 0) {
+        return -1.0;
+    } else {
+        return (-half_b - sqrt(discriminant) ) / a;
+    }
+}
+
 color ray_color(const ray &r, int pixel_w)
 {
-    const auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
+    const auto t = hit_sphere_rev(point3(0, 0, -1), 0.5, r);
     if(t > 0.0)
     {
         const vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
