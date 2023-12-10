@@ -29,6 +29,7 @@ set(SOURCE_FILES
     src/main.cpp
 
     ## Sources
+    src/camera.h
     src/color.h
     src/hittable_list.h
     src/hittable.h
