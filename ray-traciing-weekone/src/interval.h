@@ -13,18 +13,18 @@ public:
     {
     }    // Default interval is empty
 
-    interval(double _min, double _max)
-        : min(_min)
-        , max(_max)
+    interval(const double from, const double to)
+        : min(from)
+        , max(to)
     {
     }
 
-    bool contains(double x) const
+    bool contains(const double x) const
     {
         return min <= x && x <= max;
     }
 
-    bool surrounds(double x) const
+    bool surrounds(const double x) const
     {
         return min < x && x < max;
     }

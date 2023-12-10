@@ -1,3 +1,5 @@
+// ReSharper disable CppTooWideScopeInitStatement
+// ReSharper disable CppClangTidyModernizeUseNodiscard
 #pragma once
 
 #include "color.h"
@@ -65,7 +67,7 @@ private:
         m_pixel00_loc = viewport_upper_left + 0.5 * (m_pixel_delta_u + m_pixel_delta_v);
     }
 
-    color ray_color(const ray &r, const hittable &world) const
+    static color ray_color(const ray &r, const hittable &world)
     {
         hit_record rec;
 
