@@ -32,6 +32,7 @@ set(SOURCE_FILES
     src/color.h
     src/hittable_list.h
     src/hittable.h
+    src/interval.h
     src/ray.h
     src/sphere.h
     src/utils.h

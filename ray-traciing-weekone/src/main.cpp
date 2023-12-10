@@ -68,7 +68,8 @@ double hit_sphere_rev(const point3 &center, double radius, const ray &r)
 color ray_color(const ray &r, const hittable &world)
 {
     hit_record rec;
-    if(world.hit(r, 0, infinity, rec))
+    // if(world.hit(r, 0, infinity, rec))
+    if(world.hit(r, interval(0, infinity), rec))
     {
         return 0.5 * (rec.normal + color(1, 1, 1));
     }
@@ -99,6 +100,7 @@ int main()
 
     world.add(std::make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5));
     world.add(std::make_shared<sphere>(point3(0.0, -100.5, -1.0), 100));
+    // world.add(std::make_shared<sphere>(point3(0.0, -100.5, -200.0), 100));
 
     // Camera
     constexpr auto focal_length = 1.0;
