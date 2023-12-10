@@ -26,17 +26,21 @@ double hit_sphere(const point3 &center, double radius, const ray &r)
 
 // Sphere Optimization:
 //  b = 2 * h
-double hit_sphere_rev(const point3& center, double radius, const ray& r) {
+double hit_sphere_rev(const point3 &center, double radius, const ray &r)
+{
     const vec3 oc = r.origin() - center;
     const auto a = r.direction().length_squared();
     const auto half_b = dot(oc, r.direction());
-    const auto c = oc.length_squared() - radius*radius;
-    const auto discriminant = half_b*half_b - a*c;
+    const auto c = oc.length_squared() - radius * radius;
+    const auto discriminant = half_b * half_b - a * c;
 
-    if (discriminant < 0) {
+    if(discriminant < 0)
+    {
         return -1.0;
-    } else {
-        return (-half_b - sqrt(discriminant) ) / a;
+    }
+    else
+    {
+        return (-half_b - sqrt(discriminant)) / a;
     }
 }
 

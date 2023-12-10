@@ -30,7 +30,9 @@ set(SOURCE_FILES
 
     ## Sources
     src/color.h
+    src/hittable.h
     src/ray.h
+    src/sphere.h
     src/vec3.h
 )
 source_group("Sources" SOURCE_FILES REGULAR_EXPRESSION ".*\\.(h|cpp)")
