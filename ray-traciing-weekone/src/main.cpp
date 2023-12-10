@@ -1,8 +1,13 @@
 #include "color.h"
+#include "hittable.h"
+#include "hittable_list.h"
 #include "ray.h"
+#include "sphere.h"
+#include "utils.h"
 #include "vec3.h"
 
 #include <iostream>
+#include <memory>
 
 // Sphere: x^2 + y^2 + z^2 = r^2
 // Sphere at poiint C: (x−C(x))^2+(y−C(y))^2+(z−C(z))^2 = r^2
@@ -44,18 +49,33 @@ double hit_sphere_rev(const point3 &center, double radius, const ray &r)
     }
 }
 
-color ray_color(const ray &r, int pixel_w)
+// Version 1
+// color ray_color(const ray &r, int pixel_w)
+// {
+//     const auto t = hit_sphere_rev(point3(0, 0, -1), 0.5, r);
+//     if(t > 0.0)
+//     {
+//         const vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
+//         return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+//     }
+//
+//     // blendedValue = (1 − a) * startValue + a * endValue
+//     const vec3 unit_direction = unit_vector(r.direction());
+//     const auto a = 0.5 * (unit_direction.y() + 1.0);
+//     return (1.0 - a) * color(1.0, 1.0, 1.0) + (pixel_w % 2 == 0 ? a * color(0.5, 0.7, 1.0) : a * color(0.5, 1.0, 0.7));
+// }
+// Version 2
+color ray_color(const ray &r, const hittable &world)
 {
-    const auto t = hit_sphere_rev(point3(0, 0, -1), 0.5, r);
-    if(t > 0.0)
+    hit_record rec;
+    if(world.hit(r, 0, infinity, rec))
     {
-        const vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
-        return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+        return 0.5 * (rec.normal + color(1, 1, 1));
     }
-    // blendedValue = (1 − a) * startValue + a * endValue
+
     const vec3 unit_direction = unit_vector(r.direction());
     const auto a = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0 - a) * color(1.0, 1.0, 1.0) + (pixel_w % 2 == 0 ? a * color(0.5, 0.7, 1.0) : a * color(0.5, 1.0, 0.7));
+    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
 int main()
@@ -73,6 +93,12 @@ int main()
     // Calculate the image height, and ensure that it's at least 1.
     int image_height = static_cast<int>(image_width / aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
+
+    // World
+    hittable_list world;
+
+    world.add(std::make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5));
+    world.add(std::make_shared<sphere>(point3(0.0, -100.5, -1.0), 100));
 
     // Camera
     constexpr auto focal_length = 1.0;
@@ -111,7 +137,8 @@ int main()
             auto ray_direction = pixel_center - camera_center;
             ray r(camera_center, ray_direction);
 
-            const color pixel_color = ray_color(r, i);
+            // const color pixel_color = ray_color(r, i);
+            const color pixel_color = ray_color(r, world);
             write_color(std::cout, pixel_color);
         }
     }

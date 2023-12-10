@@ -34,6 +34,7 @@ set(SOURCE_FILES
     src/hittable.h
     src/ray.h
     src/sphere.h
+    src/utils.h
     src/vec3.h
 )
 source_group("Sources" SOURCE_FILES REGULAR_EXPRESSION ".*\\.(h|cpp)")
