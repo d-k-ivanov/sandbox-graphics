@@ -30,6 +30,7 @@ set(SOURCE_FILES
 
     ## Sources
     src/color.h
+    src/hittable_list.h
     src/hittable.h
     src/ray.h
     src/sphere.h

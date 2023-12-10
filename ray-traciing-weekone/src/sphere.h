@@ -12,7 +12,7 @@ public:
     {
     }
 
-    bool hit(const ray &r, double ray_tmin, double, ray_tmax, hit_record &rec) override
+    bool hit(const ray &r, const double ray_tmin, const double ray_tmax, hit_record &rec) override
     {
         const vec3 oc = r.origin() - m_center;
         const auto a = r.direction().length_squared();
