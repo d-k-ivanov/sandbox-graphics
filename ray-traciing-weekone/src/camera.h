@@ -6,8 +6,8 @@
 class camera
 {
 public:
-    double aspect_ratio = 1.0;
-    int image_width = 100;
+    double aspect_ratio = 1.0;    // Ratio of image width over height
+    int image_width = 100;        // Rendered image width in pixel count
 
     void render(const hittable &world)
     {
@@ -34,11 +34,11 @@ public:
     }
 
 private:
-    int m_image_height;    // Rendered image height
-    point3 m_center;    // Camera m_center
-    point3 m_pixel00_loc;    // Location of pixel 0, 0
-    vec3 m_pixel_delta_u;    // Offset to pixel to the right
-    vec3 m_pixel_delta_v;    // Offset to pixel below
+    int m_image_height = 0;    // Rendered image height
+    point3 m_center;           // Camera m_center
+    point3 m_pixel00_loc;      // Location of pixel 0, 0
+    vec3 m_pixel_delta_u;      // Offset to pixel to the right
+    vec3 m_pixel_delta_v;      // Offset to pixel below
 
     void initialize()
     {
@@ -47,9 +47,10 @@ private:
 
         m_center = point3(0, 0, 0);
 
-        double focal_length = 1.0;
-        constexpr double viewport_height = 2.0;
-        double viewport_width = viewport_height * (static_cast<double>(image_width) / m_image_height);
+        // Determine viewport dimensions.
+        constexpr auto focal_length = 1.0;
+        constexpr auto viewport_height = 2.0;
+        const auto viewport_width = viewport_height * (static_cast<double>(image_width) / m_image_height);
 
         // Calculate the vectors across the horizontal and down the vertical viewport edges.
         const auto viewport_u = vec3(viewport_width, 0, 0);
@@ -64,7 +65,7 @@ private:
         m_pixel00_loc = viewport_upper_left + 0.5 * (m_pixel_delta_u + m_pixel_delta_v);
     }
 
-    color ray_color(const ray &r, const hittable &world)
+    color ray_color(const ray &r, const hittable &world) const
     {
         hit_record rec;
 
