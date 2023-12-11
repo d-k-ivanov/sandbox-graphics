@@ -8,8 +8,9 @@
 class camera
 {
 public:
-    double aspect_ratio = 1.0;    // Ratio of image width over height
-    int image_width = 100;        // Rendered image width in pixel count
+    double aspect_ratio = 1.0;     // Ratio of image width over height
+    int image_width = 100;         // Rendered image width in pixel count
+    int samples_per_pixel = 10;    // Count of random samples for each pixel
 
     void render(const hittable &world)
     {
@@ -24,12 +25,18 @@ public:
             std::clog << "\rScanlines remaining: " << (m_image_height - j) << ' ' << std::flush;
             for(int i = 0; i < image_width; ++i)
             {
-                auto pixel_center = m_pixel00_loc + (i * m_pixel_delta_u) + (j * m_pixel_delta_v);
-                auto ray_direction = pixel_center - m_center;
-                ray r(m_center, ray_direction);
-
-                const color pixel_color = ray_color(r, world);
-                write_color(std::cout, pixel_color);
+                // auto pixel_center = m_pixel00_loc + (i * m_pixel_delta_u) + (j * m_pixel_delta_v);
+                // auto ray_direction = pixel_center - m_center;
+                // ray r(m_center, ray_direction);
+                // const color pixel_color = ray_color(r, world);
+                // write_color(std::cout, pixel_color);
+                color pixel_color(0, 0, 0);
+                for(int sample = 0; sample < samples_per_pixel; ++sample)
+                {
+                    ray r = get_ray(i, j);
+                    pixel_color += ray_color(r, world);
+                }
+                write_color(std::cout, pixel_color, samples_per_pixel);
             }
         }
         std::clog << "\rDone.                 \n";
@@ -66,6 +73,35 @@ private:
         const auto viewport_upper_left = m_center - vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
         m_pixel00_loc = viewport_upper_left + 0.5 * (m_pixel_delta_u + m_pixel_delta_v);
     }
+
+    // Get a randomly sampled camera ray for the pixel at location i,j.
+    ray get_ray(const int i, const int j) const
+    {
+        const auto pixel_center = m_pixel00_loc + (i * m_pixel_delta_u) + (j * m_pixel_delta_v);
+        const auto pixel_sample = pixel_center + pixel_sample_square();
+        // const auto pixel_sample = pixel_center + random_in_unit_disk();
+
+        const auto ray_origin = m_center;
+        const auto ray_direction = pixel_sample - ray_origin;
+
+        return {ray_origin, ray_direction};
+    }
+
+    // Returns a random point in the square surrounding a pixel at the origin.
+    vec3 pixel_sample_square() const
+    {
+        const auto px = -0.5 + random_double();
+        const auto py = -0.5 + random_double();
+        return (px * m_pixel_delta_u) + (py * m_pixel_delta_v);
+    }
+
+    // Generate a sample from the disk of given radius around a pixel at the origin.
+    // TBA
+    // vec3 pixel_sample_disk(double radius) const
+    // {
+    //     auto p = radius * random_in_unit_disk();
+    //     return (p[0] * m_pixel_delta_u) + (p[1] * m_pixel_delta_v);
+    // }
 
     static color ray_color(const ray &r, const hittable &world)
     {
