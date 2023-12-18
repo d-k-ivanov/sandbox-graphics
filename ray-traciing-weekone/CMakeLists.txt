@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 option(VERBOSE_OUTPUT OFF)
 
-set(PROJECT_NAME ray-traciing-weekone)
+set(PROJECT_NAME ray-tracing-weekone)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

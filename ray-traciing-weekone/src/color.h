@@ -7,6 +7,7 @@
 
 using color = vec3;
 
+// Write the translated [0,255] value of each color component.
 inline void write_color(std::ostream &out, const color &pixel_color, const int samples_per_pixel)
 {
     auto r = pixel_color.x();
@@ -19,7 +20,6 @@ inline void write_color(std::ostream &out, const color &pixel_color, const int s
     g *= scale;
     b *= scale;
 
-    // Write the translated [0,255] value of each color component.
     static const interval intensity(0.000, 0.999);
     out << static_cast<int>(255.999 * intensity.clamp(r)) << ' '
         << static_cast<int>(255.999 * intensity.clamp(g)) << ' '
