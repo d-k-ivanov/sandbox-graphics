@@ -116,7 +116,7 @@ private:
         }
 
         // if(world.hit(r, interval(0, 0.55), rec))
-        if(world.hit(r, interval(0, infinity), rec))
+        if(world.hit(r, interval(0.001, infinity), rec))
         {
             // return 0.5 * (rec.normal + color(1, 1, 1));
             const vec3 direction = random_on_hemisphere(rec.normal);
