@@ -20,6 +20,9 @@ public:
     point3 lookat = point3(0, 0, 0);       // Point camera is looking at
     vec3 vup = vec3(0, 1, 0);              // Camera-relative "up" direction
 
+    double defocus_angle = 0;    // Variation angle of rays through each pixel
+    double focus_dist = 10;      // Distance from camera lookfrom point to plane of perfect focus
+
     void render(const hittable &world)
     {
         initialize();
@@ -57,6 +60,8 @@ private:
     vec3 m_pixel_delta_u;      // Offset to pixel to the right
     vec3 m_pixel_delta_v;      // Offset to pixel below
     vec3 m_u, m_v, m_w;        // Camera frame basis vectors
+    vec3 m_defocus_disk_u;     // Defocus disk horizontal radius
+    vec3 m_defocus_disk_v;     // Defocus disk vertical radius
 
     void initialize()
     {
@@ -68,11 +73,14 @@ private:
 
         // Determine viewport dimensions.
         // constexpr auto focal_length = 1.0;
-        const auto focal_length = (lookfrom - lookat).length();
+        // const auto focal_length = (lookfrom - lookat).length();
+
         const auto theta = degrees_to_radians(vfov);    // 90 deg == 0.5pi == 1.5707963268 rad
         const auto h = tan(theta / 2);                  // tan(1.5707963268/2) == 1
+
         // constexpr auto viewport_height = 2.0;
-        const auto viewport_height = 2 * h * focal_length;    // 2 * h * focal_length == 2.0
+        // const auto viewport_height = 2 * h * focal_length;    // 2 * h * focal_length == 2.0
+        const auto viewport_height = 2 * h * focus_dist;
         const auto viewport_width = viewport_height * (static_cast<double>(image_width) / m_image_height);
 
         // Calculate the u,v,w unit basis vectors for the camera coordinate frame.
@@ -83,8 +91,8 @@ private:
         // Calculate the vectors across the horizontal and down the vertical viewport edges.
         // const auto viewport_u = vec3(viewport_width, 0, 0);
         // const auto viewport_v = vec3(0, -viewport_height, 0);
-        const vec3 viewport_u = viewport_width * m_u;    // Vector across viewport horizontal edge
-        const vec3 viewport_v = viewport_height * -m_v;  // Vector down viewport vertical edge
+        const vec3 viewport_u = viewport_width * m_u;      // Vector across viewport horizontal edge
+        const vec3 viewport_v = viewport_height * -m_v;    // Vector down viewport vertical edge
 
         // Calculate the horizontal and vertical delta vectors from pixel to pixel.
         m_pixel_delta_u = viewport_u / image_width;
@@ -92,18 +100,25 @@ private:
 
         // Calculate the location of the upper left pixel.
         // const auto viewport_upper_left = m_center - vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
-        const auto viewport_upper_left = m_center - (focal_length * m_w) - viewport_u/2 - viewport_v/2;
+        // const auto viewport_upper_left = m_center - (focal_length * m_w) - viewport_u / 2 - viewport_v / 2;
+        const auto viewport_upper_left = m_center - (focus_dist * m_w) - viewport_u / 2 - viewport_v / 2;
         m_pixel00_loc = viewport_upper_left + 0.5 * (m_pixel_delta_u + m_pixel_delta_v);
+
+        // Calculate the camera defocus disk basis vectors.
+        const auto defocus_radius = focus_dist * tan(degrees_to_radians(defocus_angle / 2));
+        m_defocus_disk_u = m_u * defocus_radius;
+        m_defocus_disk_v = m_v * defocus_radius;
     }
 
-    // Get a randomly sampled camera ray for the pixel at location i,j.
+    // Get a randomly-sampled camera ray for the pixel at location i,j, originating from the camera defocus disk.
     ray get_ray(const int i, const int j) const
     {
         const auto pixel_center = m_pixel00_loc + (i * m_pixel_delta_u) + (j * m_pixel_delta_v);
         const auto pixel_sample = pixel_center + pixel_sample_square();
         // const auto pixel_sample = pixel_center + random_in_unit_disk();
 
-        const auto ray_origin = m_center;
+        // const auto ray_origin = m_center;
+        auto ray_origin = (defocus_angle <= 0) ? m_center : defocus_disk_sample();
         const auto ray_direction = pixel_sample - ray_origin;
 
         return {ray_origin, ray_direction};
@@ -118,12 +133,18 @@ private:
     }
 
     // Generate a sample from the disk of given radius around a pixel at the origin.
-    // TBA
-    // vec3 pixel_sample_disk(double radius) const
-    // {
-    //     auto p = radius * random_in_unit_disk();
-    //     return (p[0] * m_pixel_delta_u) + (p[1] * m_pixel_delta_v);
-    // }
+    vec3 pixel_sample_disk(const double radius) const
+    {
+        auto p = radius * random_in_unit_disk();
+        return (p[0] * m_pixel_delta_u) + (p[1] * m_pixel_delta_v);
+    }
+
+    // Returns a random point in the camera defocus disk.
+    point3 defocus_disk_sample() const
+    {
+        auto p = random_in_unit_disk();
+        return m_center + (p[0] * m_defocus_disk_u) + (p[1] * m_defocus_disk_v);
+    }
 
     color ray_color(const ray &r, const int depth, const hittable &world) const
     {
