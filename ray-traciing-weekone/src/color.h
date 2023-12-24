@@ -7,6 +7,11 @@
 
 using color = vec3;
 
+inline double linear_to_gamma(const double linear_component)
+{
+    return sqrt(linear_component);
+}
+
 // Write the translated [0,255] value of each color component.
 inline void write_color(std::ostream &out, const color &pixel_color, const int samples_per_pixel)
 {
@@ -19,6 +24,11 @@ inline void write_color(std::ostream &out, const color &pixel_color, const int s
     r *= scale;
     g *= scale;
     b *= scale;
+
+    // Apply the linear to gamma transform.
+    r = linear_to_gamma(r);
+    g = linear_to_gamma(g);
+    b = linear_to_gamma(b);
 
     static const interval intensity(0.000, 0.999);
     out << static_cast<int>(255.999 * intensity.clamp(r)) << ' '
