@@ -130,7 +130,7 @@ private:
             {
                 return attenuation * ray_color(scattered, depth - 1, world);
             }
-            return color(0, 0, 0);
+            return {0, 0, 0};
         }
 
         const vec3 unit_direction = unit_vector(r.direction());
