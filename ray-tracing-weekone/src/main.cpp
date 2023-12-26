@@ -52,8 +52,8 @@ int main()
     auto material1 = std::make_shared<dielectric>(1.5);
     world.add(std::make_shared<sphere>(point3(0, 1, 0), 1.0, material1));
 
-    auto material2 = std::make_shared<lambertian>(color(0.4, 0.2, 0.1));
-    world.add(std::make_shared<sphere>(point3(-4, 1, 0), 1.0, material2));
+    auto material2 = std::make_shared<lambertian>(color(0.5, 0.4, 0.7));
+    world.add(std::make_shared<sphere>(point3(0, 1, 3), 1.0, material2));
 
     auto material3 = std::make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     world.add(std::make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
@@ -61,7 +61,7 @@ int main()
     camera cam;
 
     cam.aspect_ratio = 16.0 / 9.0;
-    cam.image_width = 1200;
+    cam.image_width = 1600;
     cam.samples_per_pixel = 500;
     cam.max_depth = 50;
 
