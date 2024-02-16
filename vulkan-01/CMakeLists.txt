@@ -46,6 +46,8 @@ set(SOURCE_FILES
     Source/ApplicationOne.h
     Source/Filesystem.cpp
     Source/Filesystem.h
+    Source/Pipeline.cpp
+    Source/Pipeline.h
     Source/Window.cpp
     Source/Window.h
 

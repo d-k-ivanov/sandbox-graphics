@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Filesystem.h"
+#include "Pipeline.h"
 #include "Window.h"
 
 namespace MyVulkan
@@ -14,7 +16,9 @@ public:
     void Run() const;
 
 private:
-    Window m_Window {Width, Height, "ApplicationOne"};
+    Window   m_Window {Width, Height, "ApplicationOne"};
+    Pipeline m_Pipeline {ThisExecutableLocation() + "/Resources/Shaders/SimpleShader.vert.spv",
+                         ThisExecutableLocation() + "/Resources/Shaders/SimpleShader.frag.spv"};
 };
 
 }
