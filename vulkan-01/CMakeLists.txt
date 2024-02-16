@@ -40,6 +40,11 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Resources/App.rc.in" "${CMAKE_CURREN
 set(SOURCE_FILES
     Source/Main.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/App.rc
+
+    Source/ApplicationOne.cpp
+    Source/ApplicationOne.h
+    Source/Window.cpp
+    Source/Window.h
 )
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
