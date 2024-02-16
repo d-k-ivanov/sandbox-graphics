@@ -41,10 +41,17 @@ set(SOURCE_FILES
     Source/Main.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/App.rc
 
+    # Sources
     Source/ApplicationOne.cpp
     Source/ApplicationOne.h
+    Source/Filesystem.cpp
+    Source/Filesystem.h
     Source/Window.cpp
     Source/Window.h
+
+    # Shaders
+    Resources/Shaders/SimpleShader.frag
+    Resources/Shaders/SimpleShader.vert
 )
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 

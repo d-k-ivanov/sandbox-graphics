@@ -1,7 +1,6 @@
 ## IDE
 .idea/
 .vs/
-.vscode/
 
 ## Build Folder
 build/
