@@ -18,6 +18,8 @@ public:
 
     bool ShouldClose() const;
 
+    void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface) const;
+
 private:
     void InitWindow();
 

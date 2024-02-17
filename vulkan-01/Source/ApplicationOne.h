@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Device.h"
 #include "Filesystem.h"
 #include "Pipeline.h"
 #include "Window.h"
@@ -17,8 +18,11 @@ public:
 
 private:
     Window   m_Window {Width, Height, "ApplicationOne"};
-    Pipeline m_Pipeline {ThisExecutableLocation() + "/Resources/Shaders/SimpleShader.vert.spv",
-                         ThisExecutableLocation() + "/Resources/Shaders/SimpleShader.frag.spv"};
+    Device   m_Device {m_Window};
+    Pipeline m_Pipeline {m_Device,
+                         ThisExecutableLocation() + "/Resources/Shaders/SimpleShader.vert.spv",
+                         ThisExecutableLocation() + "/Resources/Shaders/SimpleShader.frag.spv",
+                         Pipeline::DefaultPipelineConfigInfo(Width, Height)};
 };
 
-}
+}    // MyVulkan

@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include <stdexcept>
+
 namespace MyVulkan
 {
 
@@ -20,6 +22,14 @@ Window::~Window()
 bool Window::ShouldClose() const
 {
     return glfwWindowShouldClose(m_Window);
+}
+
+void Window::CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface) const
+{
+    if(glfwCreateWindowSurface(instance, m_Window, nullptr, surface) != VK_SUCCESS)
+    {
+               throw std::runtime_error("Failed to create window surface");
+    }
 }
 
 void Window::InitWindow()
