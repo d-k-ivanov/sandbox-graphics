@@ -44,12 +44,14 @@ set(SOURCE_FILES
     # Sources
     Source/ApplicationOne.cpp
     Source/ApplicationOne.h
-    Source/Filesystem.cpp
-    Source/Filesystem.h
     Source/Device.cpp
     Source/Device.h
+    Source/Filesystem.cpp
+    Source/Filesystem.h
     Source/Pipeline.cpp
     Source/Pipeline.h
+    Source/SwapChain.cpp
+    Source/SwapChain.h
     Source/Window.cpp
     Source/Window.h
 

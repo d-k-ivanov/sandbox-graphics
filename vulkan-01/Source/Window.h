@@ -16,7 +16,8 @@ public:
     Window(const Window&)            = delete;
     Window& operator=(const Window&) = delete;
 
-    bool ShouldClose() const;
+    bool       ShouldClose() const;
+    VkExtent2D GetExtent() const { return {static_cast<uint32_t>(m_Width), static_cast<uint32_t>(m_Height)}; }
 
     void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface) const;
 

@@ -41,8 +41,8 @@ std::vector<char> Pipeline::ReadFile(const std::string& filepath)
 
 void Pipeline::CreateGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo)
 {
-    assert(configInfo.PipelineLayout != VK_NULL_HANDLE, "Cannot create graphics pipeline: no pipeline layout specified");
-    assert(configInfo.RenderPass != VK_NULL_HANDLE, "Cannot create graphics pipeline: no render pass specified");
+    assert(configInfo.PipelineLayout != VK_NULL_HANDLE && "Cannot create graphics pipeline: no pipeline layout specified");
+    assert(configInfo.RenderPass != VK_NULL_HANDLE && "Cannot create graphics pipeline: no render pass specified");
 
     const auto vertCode = ReadFile(vertFilepath);
     const auto fragCode = ReadFile(fragFilepath);
@@ -73,13 +73,20 @@ void Pipeline::CreateGraphicsPipeline(const std::string& vertFilepath, const std
     vertexInputInfo.vertexAttributeDescriptionCount = 0;
     vertexInputInfo.pVertexAttributeDescriptions    = nullptr;
 
+    VkPipelineViewportStateCreateInfo ViewportInfo {};
+    ViewportInfo.sType         = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    ViewportInfo.viewportCount = 1;
+    ViewportInfo.pViewports    = &configInfo.Viewport;
+    ViewportInfo.scissorCount  = 1;
+    ViewportInfo.pScissors     = &configInfo.Scissor;
+
     VkGraphicsPipelineCreateInfo pipelineInfo {};
     pipelineInfo.sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
     pipelineInfo.stageCount          = 2;
     pipelineInfo.pStages             = shaderStages;
     pipelineInfo.pVertexInputState   = &vertexInputInfo;
     pipelineInfo.pInputAssemblyState = &configInfo.InputAssemblyInfo;
-    pipelineInfo.pViewportState      = &configInfo.ViewportInfo;
+    pipelineInfo.pViewportState      = &ViewportInfo;
     pipelineInfo.pRasterizationState = &configInfo.RasterizationInfo;
     pipelineInfo.pMultisampleState   = &configInfo.MultisampleInfo;
     pipelineInfo.pColorBlendState    = &configInfo.ColorBlendInfo;
@@ -108,7 +115,9 @@ void Pipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule*
     VkShaderModuleCreateInfo createInfo {};
     createInfo.sType    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = code.size();
+    // createInfo.codeSize = code.size() * sizeof(uint32_t);
     createInfo.pCode    = reinterpret_cast<const uint32_t*>(code.data());
+
 
     if(vkCreateShaderModule(m_Device.GetDevice(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
     {
@@ -129,12 +138,6 @@ PipelineConfigInfo Pipeline::DefaultPipelineConfigInfo(uint32_t width, uint32_t 
 
     configInfo.Scissor.offset = {0, 0};
     configInfo.Scissor.extent = {width, height};
-
-    configInfo.ViewportInfo.sType         = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-    configInfo.ViewportInfo.viewportCount = 1;
-    configInfo.ViewportInfo.pViewports    = &configInfo.Viewport;
-    configInfo.ViewportInfo.scissorCount  = 1;
-    configInfo.ViewportInfo.pScissors     = &configInfo.Scissor;
 
     configInfo.InputAssemblyInfo.sType                  = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     configInfo.InputAssemblyInfo.topology               = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;

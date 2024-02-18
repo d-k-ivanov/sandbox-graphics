@@ -1,5 +1,6 @@
-#version 450
+#version 460
 #extension GL_KHR_vulkan_glsl : enable
+
 
 vec2 positions[3] = vec2[](
     vec2(0.0, -0.5),

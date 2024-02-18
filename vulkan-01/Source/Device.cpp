@@ -89,7 +89,7 @@ void Device::CreateInstance()
     createInfo.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo     = &appInfo;
 
-    const auto extensions              = GetRequiredExtensions();
+    const auto extensions = GetRequiredExtensions();
     createInfo.enabledExtensionCount   = static_cast<uint32_t>(extensions.size());
     createInfo.ppEnabledExtensionNames = extensions.data();
 
