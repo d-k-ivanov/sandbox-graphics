@@ -125,6 +125,11 @@ void Pipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule*
     }
 }
 
+void Pipeline::Bind(const VkCommandBuffer commandBuffer) const
+{
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+}
+
 PipelineConfigInfo Pipeline::DefaultPipelineConfigInfo(uint32_t width, uint32_t height)
 {
     PipelineConfigInfo configInfo {};

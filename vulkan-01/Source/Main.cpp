@@ -19,7 +19,7 @@ int main()
     // glm::vec4 vec;
     // auto      test = matrix * vec;
 
-    const MyVulkan::ApplicationOne app {};
+    MyVulkan::ApplicationOne app {};
     try
     {
         app.Run();

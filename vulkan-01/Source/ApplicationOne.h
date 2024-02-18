@@ -24,13 +24,13 @@ public:
     ApplicationOne(const ApplicationOne&)            = delete;
     ApplicationOne& operator=(const ApplicationOne&) = delete;
 
-    void Run() const;
+    void Run();
 
 private:
     void CreatePipelineLayout();
     void CreatePipeline();
     void CreateCommandBuffers();
-    void DrawFrame() const;
+    void DrawFrame();
 
     Window                    m_Window {Width, Height, "ApplicationOne"};
     Device                    m_Device {m_Window};

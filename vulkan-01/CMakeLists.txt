@@ -67,26 +67,55 @@ if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy")
 endif()
 
 add_custom_target(
-    always_run_target ALL
+    always_run_resources_target ALL
     DEPENDS
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy" # fake! ensure we run!
+    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyResourses" # fake! ensure we run!
 )
 
 add_custom_command(
     OUTPUT
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy" # fake! ensure we run!
+    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyResourses" # fake! ensure we run!
     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources"
 )
 
+# Find glslc executable
+find_program(GLSLC_EXECUTABLE NAMES glslc)
+
+if(NOT GLSLC_EXECUTABLE)
+    message(FATAL_ERROR "glslc not found. Please make sure Vulkan SDK is installed and available in your system's PATH.")
+endif()
+
+add_custom_target(
+    always_run_shaders_target ALL
+    DEPENDS
+    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShader" # fake! ensure we run!
+)
+
+# Compile shaders
+add_custom_command(
+    OUTPUT
+    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShader" # fake! ensure we run!
+    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.vert.spv"
+    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.frag.spv"
+    COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.vert" -o "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.vert.spv"
+    COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.frag" -o "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.frag.spv"
+    DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.vert"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.frag"
+)
+
+# Find packages
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(Vulkan REQUIRED)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-add_dependencies(${PROJECT_NAME} always_run_target)
+# Add executable
+add_executable(${PROJECT_NAME} ${EXE_PLATFORM_KEYWORD} ${SOURCE_FILES})
+add_dependencies(${PROJECT_NAME} always_run_resources_target)
+add_dependencies(${PROJECT_NAME} always_run_shaders_target)
 
 # Use WinMain as a default endpoint on Windows
 if(WIN32)
