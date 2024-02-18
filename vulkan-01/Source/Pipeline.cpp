@@ -1,5 +1,7 @@
 #include "Pipeline.h"
 
+#include "Model.h"
+
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -66,12 +68,15 @@ void Pipeline::CreateGraphicsPipeline(const std::string& vertFilepath, const std
     shaderStages[1].pNext               = nullptr;
     shaderStages[1].pSpecializationInfo = nullptr;
 
+    const auto bindingDescriptions   = Model::Vertex::GetBindingDescriptions();
+    const auto attributeDescriptions = Model::Vertex::GetAttributeDescriptions();
+
     VkPipelineVertexInputStateCreateInfo vertexInputInfo {};
     vertexInputInfo.sType                           = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputInfo.vertexBindingDescriptionCount   = 0;
-    vertexInputInfo.pVertexBindingDescriptions      = nullptr;
-    vertexInputInfo.vertexAttributeDescriptionCount = 0;
-    vertexInputInfo.pVertexAttributeDescriptions    = nullptr;
+    vertexInputInfo.vertexBindingDescriptionCount   = static_cast<uint32_t>(bindingDescriptions.size());
+    vertexInputInfo.pVertexBindingDescriptions      = bindingDescriptions.data();
+    vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+    vertexInputInfo.pVertexAttributeDescriptions    = attributeDescriptions.data();
 
     VkPipelineViewportStateCreateInfo ViewportInfo {};
     ViewportInfo.sType         = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -116,8 +121,7 @@ void Pipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule*
     createInfo.sType    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = code.size();
     // createInfo.codeSize = code.size() * sizeof(uint32_t);
-    createInfo.pCode    = reinterpret_cast<const uint32_t*>(code.data());
-
+    createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
     if(vkCreateShaderModule(m_Device.GetDevice(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
     {

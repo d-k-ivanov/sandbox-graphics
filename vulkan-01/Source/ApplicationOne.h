@@ -2,6 +2,7 @@
 
 #include "Device.h"
 #include "Filesystem.h"
+#include "Model.h"
 #include "Pipeline.h"
 #include "SwapChain.h"
 #include "Window.h"
@@ -27,6 +28,7 @@ public:
     void Run();
 
 private:
+    void LoadModels();
     void CreatePipelineLayout();
     void CreatePipeline();
     void CreateCommandBuffers();
@@ -42,6 +44,8 @@ private:
     //                      Pipeline::DefaultPipelineConfigInfo(Width, Height)};
     VkPipelineLayout             m_PipelineLayout;
     std::vector<VkCommandBuffer> m_CommandBuffers;
+    std::unique_ptr<Model>       m_Model;
+
 };
 
 }    // MyVulkan

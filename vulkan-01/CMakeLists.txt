@@ -37,6 +37,13 @@ endif()
 # Resource file
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Resources/App.rc.in" "${CMAKE_CURRENT_BINARY_DIR}/App.rc")
 
+set(SHADER_FILES
+    Resources/Shaders/SimpleShader.vert
+    Resources/Shaders/SimpleShader.frag
+    Resources/Shaders/SimpleShader2.vert
+    Resources/Shaders/SimpleShader2.frag
+)
+
 set(SOURCE_FILES
     Source/Main.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/App.rc
@@ -48,6 +55,8 @@ set(SOURCE_FILES
     Source/Device.h
     Source/Filesystem.cpp
     Source/Filesystem.h
+    Source/Model.cpp
+    Source/Model.h
     Source/Pipeline.cpp
     Source/Pipeline.h
     Source/SwapChain.cpp
@@ -56,10 +65,7 @@ set(SOURCE_FILES
     Source/Window.h
 
     # Shaders
-    Resources/Shaders/SimpleShader.frag
-    Resources/Shaders/SimpleShader.vert
-    Resources/Shaders/SimpleShaderSprj.frag
-    Resources/Shaders/SimpleShaderSprj.vert
+    ${SHADER_FILES}
 )
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
@@ -90,23 +96,44 @@ if(NOT GLSLC_EXECUTABLE)
     message(FATAL_ERROR "glslc not found. Please make sure Vulkan SDK is installed and available in your system's PATH.")
 endif()
 
+# add_custom_target(
+#     always_run_shaders_target ALL
+#     DEPENDS
+#     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShader" # fake! ensure we run!
+# )
+
+# # Compile shaders
+# add_custom_command(
+#     OUTPUT
+#     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShader" # fake! ensure we run!
+#     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.vert.spv"
+#     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.frag.spv"
+#     COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.vert" -o "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.vert.spv"
+#     COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.frag" -o "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.frag.spv"
+#     DEPENDS
+#     "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.vert"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.frag"
+# )
+
+foreach(SHADER_FILE ${SHADER_FILES})
+    get_filename_component(SHADER_FILE_NAME ${SHADER_FILE} NAME)
+    set(SHADER_OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/${SHADER_FILE_NAME}.spv")
+    add_custom_command(
+        OUTPUT
+        "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy${SHADER_FILE_NAME}" # fake! ensure we run!
+        "${SHADER_OUTPUT_FILE}"
+        COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE}" -o "${SHADER_OUTPUT_FILE}"
+        DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE}"
+    )
+    list(APPEND SHADER_OUTPUT_FILES "${SHADER_OUTPUT_FILE}")
+endforeach()
+
 add_custom_target(
     always_run_shaders_target ALL
     DEPENDS
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShader" # fake! ensure we run!
-)
-
-# Compile shaders
-add_custom_command(
-    OUTPUT
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShader" # fake! ensure we run!
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.vert.spv"
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.frag.spv"
-    COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.vert" -o "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.vert.spv"
-    COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.frag" -o "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.frag.spv"
-    DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.vert"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.frag"
+    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShaders" # fake! ensure we run!
+    ${SHADER_OUTPUT_FILES}
 )
 
 # Find packages
