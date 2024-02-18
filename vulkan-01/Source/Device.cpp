@@ -296,7 +296,7 @@ std::vector<const char*> Device::GetRequiredExtensions() const
     const char** glfwExtensions;
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+    std::vector extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
     if(EnableValidationLayers)
     {
