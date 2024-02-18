@@ -58,6 +58,8 @@ set(SOURCE_FILES
     # Shaders
     Resources/Shaders/SimpleShader.frag
     Resources/Shaders/SimpleShader.vert
+    Resources/Shaders/SimpleShaderSprj.frag
+    Resources/Shaders/SimpleShaderSprj.vert
 )
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 

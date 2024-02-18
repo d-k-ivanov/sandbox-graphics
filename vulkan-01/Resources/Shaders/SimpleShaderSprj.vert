@@ -1,4 +1,4 @@
-#version 450
+#version 460
 
 uniform mat4 matVP;
 uniform mat4 matGeo;
