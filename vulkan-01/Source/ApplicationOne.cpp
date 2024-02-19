@@ -18,9 +18,9 @@ namespace
         }
         else
         {
-            const Model::Vertex mid1 = {{(v1.Position.x + v2.Position.x) / 2, (v1.Position.y + v2.Position.y) / 2}};
-            const Model::Vertex mid2 = {{(v2.Position.x + v3.Position.x) / 2, (v2.Position.y + v3.Position.y) / 2}};
-            const Model::Vertex mid3 = {{(v3.Position.x + v1.Position.x) / 2, (v3.Position.y + v1.Position.y) / 2}};
+            const Model::Vertex mid1 = {{(v1.Position.x + v2.Position.x) / 2, (v1.Position.y + v2.Position.y) / 2}, v1.Color};
+            const Model::Vertex mid2 = {{(v2.Position.x + v3.Position.x) / 2, (v2.Position.y + v3.Position.y) / 2}, v2.Color};
+            const Model::Vertex mid3 = {{(v3.Position.x + v1.Position.x) / 2, (v3.Position.y + v1.Position.y) / 2}, v3.Color};
 
             GenerateSierpinskiTriangle(vertices, v1, mid1, mid3, depth - 1);
             GenerateSierpinskiTriangle(vertices, mid1, v2, mid2, depth - 1);
@@ -32,8 +32,8 @@ namespace
 
 ApplicationOne::ApplicationOne()
 {
-    // LoadModels();
-    LoadSerpinskiTriangle();
+    LoadModels();
+    // LoadSerpinskiTriangle();
     CreatePipelineLayout();
     CreatePipeline();
     CreateCommandBuffers();
@@ -57,7 +57,10 @@ void ApplicationOne::Run()
 
 void ApplicationOne::LoadModels()
 {
-    std::vector<Model::Vertex> vertices = {{{0.0f, -0.9f}}, {{0.9f, 0.9f}}, {{-0.9f, 0.9f}}};
+    std::vector<Model::Vertex> vertices = {
+        {{0.0f, -0.9f}, {1.0f, 0.0f, 0.0f}},
+        {{0.9f, 0.9f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.9f, 0.9f}, {0.0f, 0.0f, 1.0f}}};
 
     m_Model = std::make_unique<Model>(m_Device, vertices);
 }
@@ -66,9 +69,9 @@ void ApplicationOne::LoadSerpinskiTriangle()
 {
     std::vector<Model::Vertex> vertices;
 
-    constexpr Model::Vertex v1 = {{0.0f, -0.9f}};
-    constexpr Model::Vertex v2 = {{0.9f, 0.9f}};
-    constexpr Model::Vertex v3 = {{-0.9f, 0.9f}};
+    constexpr Model::Vertex v1 = {{0.0f, -0.9f}, {0.5f, 0.0f, 1.0f}};
+    constexpr Model::Vertex v2 = {{0.9f, 0.9f}, {0.5f, 0.0f, 1.0f}};
+    constexpr Model::Vertex v3 = {{-0.9f, 0.9f}, {0.5f, 0.0f, 1.0f}};
 
     constexpr int depth = 8;    // Set the desired depth of the Sierpinski triangle
 
