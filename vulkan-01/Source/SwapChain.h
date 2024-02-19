@@ -18,8 +18,8 @@ public:
     SwapChain(Device& deviceRef, VkExtent2D windowExtent);
     ~SwapChain();
 
-    SwapChain(const SwapChain&)      = delete;
-    void operator=(const SwapChain&) = delete;
+    SwapChain(const SwapChain&)            = delete;
+    SwapChain& operator=(const SwapChain&) = delete;
 
     VkFramebuffer GetFrameBuffer(const int index) const { return m_SwapChainFramebuffers[index]; }
     VkRenderPass  GetRenderPass() const { return m_RenderPass; }
