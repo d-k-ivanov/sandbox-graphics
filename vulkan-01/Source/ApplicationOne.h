@@ -16,8 +16,10 @@ namespace MyVulkan
 class ApplicationOne
 {
 public:
-    int Width  = 800;
-    int Height = 600;
+    // int Width  = 1600;
+    // int Height = 1200;
+    int Width  = 2560;
+    int Height = 1920;
 
     ApplicationOne();
     ~ApplicationOne();
