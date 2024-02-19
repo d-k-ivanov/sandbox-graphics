@@ -32,7 +32,8 @@ namespace
 
 ApplicationOne::ApplicationOne()
 {
-    LoadModels();
+    // LoadModels();
+    LoadSerpinskiTriangle();
     CreatePipelineLayout();
     CreatePipeline();
     CreateCommandBuffers();
@@ -56,9 +57,13 @@ void ApplicationOne::Run()
 
 void ApplicationOne::LoadModels()
 {
-    // std::vector<Model::Vertex> vertices = {{{0.0f, -0.9f}}, {{0.9f, 0.9f}}, {{-0.9f, 0.9f}}};
-    // m_Model                             = std::make_unique<Model>(m_Device, vertices);
+    std::vector<Model::Vertex> vertices = {{{0.0f, -0.9f}}, {{0.9f, 0.9f}}, {{-0.9f, 0.9f}}};
 
+    m_Model = std::make_unique<Model>(m_Device, vertices);
+}
+
+void ApplicationOne::LoadSerpinskiTriangle()
+{
     std::vector<Model::Vertex> vertices;
 
     constexpr Model::Vertex v1 = {{0.0f, -0.9f}};

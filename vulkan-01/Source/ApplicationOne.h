@@ -31,6 +31,7 @@ public:
 
 private:
     void LoadModels();
+    void LoadSerpinskiTriangle();
     void CreatePipelineLayout();
     void CreatePipeline();
     void CreateCommandBuffers();
