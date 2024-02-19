@@ -34,13 +34,16 @@ private:
     void LoadSerpinskiTriangle();
     void CreatePipelineLayout();
     void CreatePipeline();
+    void RecreateSwapChain();
     void CreateCommandBuffers();
+    void FreeCommandBuffers();
+    void RecordCommandBuffer(uint32_t imageIndex) const;
     void DrawFrame();
 
-    Window                    m_Window {Width, Height, "ApplicationOne"};
-    Device                    m_Device {m_Window};
-    SwapChain                 m_SwapChain {m_Device, m_Window.GetExtent()};
-    std::unique_ptr<Pipeline> m_Pipeline;
+    Window                     m_Window {Width, Height, "ApplicationOne"};
+    Device                     m_Device {m_Window};
+    std::unique_ptr<SwapChain> m_SwapChain;
+    std::unique_ptr<Pipeline>  m_Pipeline;
     // Pipeline  m_Pipeline {m_Device,
     //                      ThisExecutableLocation() + "/Resources/Shaders/SimpleShader.vert.spv",
     //                      ThisExecutableLocation() + "/Resources/Shaders/SimpleShader.frag.spv",
@@ -48,7 +51,6 @@ private:
     VkPipelineLayout             m_PipelineLayout;
     std::vector<VkCommandBuffer> m_CommandBuffers;
     std::unique_ptr<Model>       m_Model;
-
 };
 
 }    // MyVulkan

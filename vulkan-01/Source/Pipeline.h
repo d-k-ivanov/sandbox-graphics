@@ -9,14 +9,18 @@ namespace MyVulkan
 {
 struct PipelineConfigInfo
 {
-    VkViewport                             Viewport;
-    VkRect2D                               Scissor;
+    // PipelineConfigInfo(const PipelineConfigInfo&)            = delete;
+    // PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+
+    VkPipelineViewportStateCreateInfo      ViewportInfo;
     VkPipelineInputAssemblyStateCreateInfo InputAssemblyInfo;
     VkPipelineRasterizationStateCreateInfo RasterizationInfo;
     VkPipelineMultisampleStateCreateInfo   MultisampleInfo;
     VkPipelineColorBlendAttachmentState    ColorBlendAttachment;
     VkPipelineColorBlendStateCreateInfo    ColorBlendInfo;
     VkPipelineDepthStencilStateCreateInfo  DepthStencilInfo;
+    std::vector<VkDynamicState>            DynamicStateEnables;
+    VkPipelineDynamicStateCreateInfo       DynamicStateInfo;
     VkPipelineLayout                       PipelineLayout = nullptr;
     VkRenderPass                           RenderPass     = nullptr;
     uint32_t                               Subpass        = 0;
@@ -31,8 +35,8 @@ public:
     Pipeline(const Pipeline&)            = delete;
     Pipeline& operator=(const Pipeline&) = delete;
 
-    void Bind(VkCommandBuffer commandBuffer) const;
-    static PipelineConfigInfo DefaultPipelineConfigInfo(uint32_t width, uint32_t height);
+    void        Bind(VkCommandBuffer commandBuffer) const;
+    static void DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
 
 private:
     static std::vector<char> ReadFile(const std::string& filepath);

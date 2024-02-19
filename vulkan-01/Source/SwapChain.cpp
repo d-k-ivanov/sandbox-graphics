@@ -13,12 +13,17 @@ SwapChain::SwapChain(Device& deviceRef, const VkExtent2D windowExtent)
     : m_Device {deviceRef}
     , m_WindowExtent {windowExtent}
 {
-    CreateSwapChain();
-    CreateImageViews();
-    CreateRenderPass();
-    CreateDepthResources();
-    CreateFramebuffers();
-    CreateSyncObjects();
+    Init();
+}
+
+SwapChain::SwapChain(Device& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous)
+    : m_Device {deviceRef}
+    , m_WindowExtent {windowExtent}
+    , m_OldSwapChain {std::move(previous)}
+{
+    Init();
+
+    m_OldSwapChain = nullptr;
 }
 
 SwapChain::~SwapChain()
@@ -127,6 +132,16 @@ VkResult SwapChain::SubmitCommandBuffers(const VkCommandBuffer* buffers, const u
     return result;
 }
 
+void SwapChain::Init()
+{
+    CreateSwapChain();
+    CreateImageViews();
+    CreateRenderPass();
+    CreateDepthResources();
+    CreateFramebuffers();
+    CreateSyncObjects();
+}
+
 void SwapChain::CreateSwapChain()
 {
     const SwapChainSupportDetails swapChainSupport = m_Device.GetSwapChainSupport();
@@ -174,7 +189,8 @@ void SwapChain::CreateSwapChain()
     createInfo.presentMode = presentMode;
     createInfo.clipped     = VK_TRUE;
 
-    createInfo.oldSwapchain = VK_NULL_HANDLE;
+    // createInfo.oldSwapchain = VK_NULL_HANDLE;
+    createInfo.oldSwapchain = m_OldSwapChain ? m_OldSwapChain->m_SwapChain : nullptr;
 
     if(vkCreateSwapchainKHR(m_Device.GetDevice(), &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
     {

@@ -4,7 +4,7 @@
 
 #include <vulkan/vulkan.h>
 
-#include <string>
+#include <memory>
 #include <vector>
 
 namespace MyVulkan
@@ -16,12 +16,13 @@ public:
     static constexpr int MaxFramesInFlight = 2;
 
     SwapChain(Device& deviceRef, VkExtent2D windowExtent);
+    SwapChain(Device& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous);
     ~SwapChain();
 
     SwapChain(const SwapChain&)            = delete;
     SwapChain& operator=(const SwapChain&) = delete;
 
-    VkFramebuffer GetFrameBuffer(const int index) const { return m_SwapChainFramebuffers[index]; }
+    VkFramebuffer GetFrameBuffer(const uint32_t index) const { return m_SwapChainFramebuffers[index]; }
     VkRenderPass  GetRenderPass() const { return m_RenderPass; }
     VkImageView   GetImageView(const int index) const { return m_SwapChainImageViews[index]; }
     size_t        ImageCount() const { return m_SwapChainImages.size(); }
@@ -40,6 +41,7 @@ public:
     VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, const uint32_t* imageIndex);
 
 private:
+    void Init();
     void CreateSwapChain();
     void CreateImageViews();
     void CreateDepthResources();
@@ -68,6 +70,7 @@ private:
     VkExtent2D m_WindowExtent;
 
     VkSwapchainKHR m_SwapChain;
+    std::shared_ptr<SwapChain> m_OldSwapChain;
 
     std::vector<VkSemaphore> m_ImageAvailableSemaphores;
     std::vector<VkSemaphore> m_RenderFinishedSemaphores;
