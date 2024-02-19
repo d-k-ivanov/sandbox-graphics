@@ -69,25 +69,6 @@ set(SOURCE_FILES
 )
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
-# Dummy target to ensure that resources are up-to-date
-if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy")
-    message(FATAL_ERROR "\"${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy\" exists, remove it!")
-endif()
-
-add_custom_target(
-    always_run_resources_target ALL
-    DEPENDS
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyResourses" # fake! ensure we run!
-)
-
-add_custom_command(
-    OUTPUT
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyResourses" # fake! ensure we run!
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources"
-)
 
 # Find glslc executable
 find_program(GLSLC_EXECUTABLE NAMES glslc)
@@ -96,45 +77,111 @@ if(NOT GLSLC_EXECUTABLE)
     message(FATAL_ERROR "glslc not found. Please make sure Vulkan SDK is installed and available in your system's PATH.")
 endif()
 
-# add_custom_target(
-#     always_run_shaders_target ALL
-#     DEPENDS
-#     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShader" # fake! ensure we run!
-# )
 
-# # Compile shaders
-# add_custom_command(
-#     OUTPUT
-#     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShader" # fake! ensure we run!
-#     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.vert.spv"
-#     "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.frag.spv"
-#     COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.vert" -o "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.vert.spv"
-#     COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.frag" -o "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/SimpleShader.frag.spv"
-#     DEPENDS
-#     "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.vert"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shaders/SimpleShader.frag"
-# )
+get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(isMultiConfig)
+    # Dummy target to ensure that resources are up-to-date
+    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyResourses")
+        message(FATAL_ERROR "\"${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyResourses\" exists, remove it!")
+    endif()
 
-foreach(SHADER_FILE ${SHADER_FILES})
-    get_filename_component(SHADER_FILE_NAME ${SHADER_FILE} NAME)
-    set(SHADER_OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/${SHADER_FILE_NAME}.spv")
+    add_custom_target(
+        always_run_resources_target ALL
+        DEPENDS
+        "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyResourses" # fake! ensure we run!
+    )
+
     add_custom_command(
         OUTPUT
-        "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy${SHADER_FILE_NAME}" # fake! ensure we run!
-        "${SHADER_OUTPUT_FILE}"
-        COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE}" -o "${SHADER_OUTPUT_FILE}"
-        DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE}"
+        "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyResourses" # fake! ensure we run!
+        "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+        "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources"
     )
-    list(APPEND SHADER_OUTPUT_FILES "${SHADER_OUTPUT_FILE}")
-endforeach()
 
-add_custom_target(
-    always_run_shaders_target ALL
-    DEPENDS
-    "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShaders" # fake! ensure we run!
-    ${SHADER_OUTPUT_FILES}
-)
+    foreach(SHADER_FILE ${SHADER_FILES})
+        # Dummy target to ensure that resources are up-to-date
+        if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy${SHADER_FILE_NAME}")
+            message(FATAL_ERROR "\"${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy${SHADER_FILE_NAME}\" exists, remove it!")
+        endif()
+
+        get_filename_component(SHADER_FILE_NAME ${SHADER_FILE} NAME)
+        set(SHADER_OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Resources/Shaders/${SHADER_FILE_NAME}.spv")
+        add_custom_command(
+            OUTPUT
+            "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Dummy${SHADER_FILE_NAME}" # fake! ensure we run!
+            "${SHADER_OUTPUT_FILE}"
+            COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE}" -o "${SHADER_OUTPUT_FILE}"
+            DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE}"
+        )
+        list(APPEND SHADER_OUTPUT_FILES "${SHADER_OUTPUT_FILE}")
+    endforeach()
+
+    # Dummy target to ensure that resources are up-to-date
+    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShaders")
+        message(FATAL_ERROR "\"${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShaders\" exists, remove it!")
+    endif()
+
+    add_custom_target(
+        always_run_shaders_target ALL
+        DEPENDS
+        "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/DummyShaders" # fake! ensure we run!
+        ${SHADER_OUTPUT_FILES}
+    )
+else()
+    # Dummy target to ensure that resources are up-to-date
+    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/DummyResourses")
+        message(FATAL_ERROR "\"${CMAKE_CURRENT_BINARY_DIR}/DummyResourses\" exists, remove it!")
+    endif()
+
+    add_custom_target(
+        always_run_resources_target ALL
+        DEPENDS
+        "${CMAKE_CURRENT_BINARY_DIR}/DummyResourses" # fake! ensure we run!
+    )
+
+    add_custom_command(
+        OUTPUT
+        "${CMAKE_CURRENT_BINARY_DIR}/DummyResourses" # fake! ensure we run!
+        "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+        "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+    )
+
+    foreach(SHADER_FILE ${SHADER_FILES})
+        # Dummy target to ensure that resources are up-to-date
+        if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Dummy${SHADER_FILE_NAME}")
+            message(FATAL_ERROR "\"${CMAKE_CURRENT_BINARY_DIR}/Dummy${SHADER_FILE_NAME}\" exists, remove it!")
+        endif()
+
+        get_filename_component(SHADER_FILE_NAME ${SHADER_FILE} NAME)
+        set(SHADER_OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/Resources/Shaders/${SHADER_FILE_NAME}.spv")
+        add_custom_command(
+            OUTPUT
+            "${CMAKE_CURRENT_BINARY_DIR}/Dummy${SHADER_FILE_NAME}" # fake! ensure we run!
+            "${SHADER_OUTPUT_FILE}"
+            COMMAND ${GLSLC_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE}" -o "${SHADER_OUTPUT_FILE}"
+            DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE}"
+        )
+        list(APPEND SHADER_OUTPUT_FILES "${SHADER_OUTPUT_FILE}")
+    endforeach()
+
+    # Dummy target to ensure that resources are up-to-date
+    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/DummyShaders")
+        message(FATAL_ERROR "\"${CMAKE_CURRENT_BINARY_DIR}/DummyShaders\" exists, remove it!")
+    endif()
+
+    add_custom_target(
+        always_run_shaders_target ALL
+        DEPENDS
+        "${CMAKE_CURRENT_BINARY_DIR}/DummyShaders" # fake! ensure we run!
+        ${SHADER_OUTPUT_FILES}
+    )
+endif()
 
 # Find packages
 find_package(glfw3 CONFIG REQUIRED)
