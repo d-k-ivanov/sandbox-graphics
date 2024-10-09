@@ -1,4 +1,12 @@
+## IDE
+.idea/
+.vs/
+.vscode/
+
+## Build Folder
+**/build/
+
+## Misc
 *.dotSettings.user
 .ipynb_checkpoints/
-.vscode/
 tmp/

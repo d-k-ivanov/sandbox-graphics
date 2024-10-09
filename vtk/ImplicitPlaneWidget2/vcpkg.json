@@ -1,0 +1,13 @@
+{
+    "name": "vtkproject",
+    "version": "1.0.0",
+    "dependencies": [
+        {
+            "name": "vtk",
+            "features": [
+                "opengl"
+            ]
+
+        }
+    ]
+}
