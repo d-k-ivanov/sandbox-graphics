@@ -1,5 +1,7 @@
 #include "tgaimage.h"
+
 #include <cmath>
+#include <iostream>
 
 constexpr TGAColor white  = {255, 255, 255, 255};    // attention, BGRA order
 constexpr TGAColor green  = {0, 255, 0, 255};
@@ -16,11 +18,16 @@ int main(int argc, char** argv)
     int ax = 7, ay = 3;
     int bx = 12, by = 37;
     int cx = 62, cy = 53;
+    int dx = 32, dy = 32;
 
     framebuffer.set(ax, ay, white);
     framebuffer.set(bx, by, white);
     framebuffer.set(cx, cy, white);
+    framebuffer.set(dx, dy, white);
 
     framebuffer.write_tga_file("framebuffer.tga");
+
+    // std::cout << "Press Enter to continue...";
+    // std::cin.get();
     return 0;
 }

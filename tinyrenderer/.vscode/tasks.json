@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake: configure (VS2026 x64)",
+      "type": "shell",
+      "command": "cmake",
+      "args": [ "-G", "Visual Studio 18 2026", "-A", "x64", "-B", "build", "-S", "."],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: build (RelWithDebInfo)",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--build", "build", "--config", "RelWithDebInfo"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "CMake: configure (VS2026 x64)",
+      "problemMatcher": ["$msCompile"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run: tinyrenderer.exe (RelWithDebInfo)",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/RelWithDebInfo/tinyrenderer.exe",
+      "args": [],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "CMake: build (RelWithDebInfo)",
+      "problemMatcher": []
+    }
+  ]
+}
