@@ -15,19 +15,15 @@ int main(int argc, char** argv)
     constexpr int height = 64;
     TGAImage      framebuffer(width, height, TGAImage::RGB);
 
-    int ax = 7, ay = 3;
-    int bx = 12, by = 37;
-    int cx = 62, cy = 53;
-    int dx = 32, dy = 32;
+    int ax = 31, ay = 59;
+    int bx = 3, by = 3;
+    int cx = 59, cy = 3;
 
-    framebuffer.set(ax, ay, white);
-    framebuffer.set(bx, by, white);
-    framebuffer.set(cx, cy, white);
-    framebuffer.set(dx, dy, white);
+    framebuffer.set(ax, ay, red);
+    framebuffer.set(bx, by, green);
+    framebuffer.set(cx, cy, blue);
 
     framebuffer.write_tga_file("framebuffer.tga");
 
-    // std::cout << "Press Enter to continue...";
-    // std::cin.get();
     return 0;
 }
